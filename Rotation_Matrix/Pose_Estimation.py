@@ -32,7 +32,7 @@ def filter_rectangles(sort_rect):
     return return_rectangles
 
 def convert_to_cartesian(beacons):
-    #i = 0
+    i = 0
     # print 'default to cartesian in'
     # print beacons
     for beacon in beacons:
@@ -46,7 +46,7 @@ def convert_to_cartesian(beacons):
             beacon[0] = 0
         # print 'beacon val'
         # print beacon[0]
-        #beacons[i][0] = beacon[0]
+        beacons[i][0] = beacon[0]
         # print 'array val'
         # print beacons[i][0]
         #convert y
@@ -57,7 +57,7 @@ def convert_to_cartesian(beacons):
             beacon[1] = HEIGHT/2-beacon[1]
         else:
             beacon[1] = 0
-        #beacons[i][1] = beacon[1]
+        beacons[i][1] = beacon[1]
         i+=1
     # print 'default to cartesian out'
     # print beacons
