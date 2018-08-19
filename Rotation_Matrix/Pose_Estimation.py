@@ -139,10 +139,10 @@ cap.set(3, WIDTH)#width
 cap.set(4, HEIGHT)#height
 
 ilowH = 0
-ihighH = 118
+ihighH = 136
 ilowS = 0
-ihighS = 84
-ilowV = 124
+ihighS = 94
+ilowV = 170
 ihighV = 255
 # create trackbars for color change
 cv2.createTrackbar('lowH','image',ilowH,255,callback)
@@ -235,8 +235,7 @@ while(True):
         #This means that to extract depth from the
         (success, rotation_vector, translation_vector) = cv2.solvePnP(model_points, target_points, camera_matrix,
                                                                       distortion_coeffs)
-        print format(rotation_vector)#radians (x,y,z)
-        print format(translation_vector)#arbitrary units...only valuable insofar as the ratio of coordinates are scaled correctly. (x,y,z)
+
 
 
         #adds the bgr axes to the original image for fancy effect
@@ -266,6 +265,20 @@ while(True):
                  (target[3][0], target[3][1]), (255, 255, 255), 2)
         cv2.line(blank_slate, (target[3][0], target[3][1]),
                  (target[0][0], target[0][1]), (255, 255, 255), 2)
+
+        # adjust rotation_matrix
+        camera_angle = .455
+        rotation_vector[0] -= np.pi * -1
+        rotation_vector[2] *= -1
+
+        x_theta = rotation_vector[0]
+        z_theta = rotation_vector[1]
+        y_theta = rotation_vector[2]
+
+
+        print format(rotation_vector * 57)  # radians (x,y,z)
+        print format(translation_vector)  # arbitrary units...only valuable insofar as the ratio of coordinates are scaled correctly. (x,y,z)
+
 
     # Just adds extra displays to make real-time tuning and debugging easier
     lineThickness = 1
