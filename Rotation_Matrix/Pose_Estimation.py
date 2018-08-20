@@ -139,10 +139,10 @@ cap.set(3, WIDTH)#width
 cap.set(4, HEIGHT)#height
 
 ilowH = 0
-ihighH = 136
+ihighH = 109
 ilowS = 0
-ihighS = 94
-ilowV = 170
+ihighS = 88
+ilowV = 141
 ihighV = 255
 # create trackbars for color change
 cv2.createTrackbar('lowH','image',ilowH,255,callback)
@@ -271,11 +271,34 @@ while(True):
         rotation_vector[0] -= np.pi * -1
         rotation_vector[2] *= -1
 
-        x_theta = rotation_vector[0]
-        z_theta = rotation_vector[1]
-        y_theta = rotation_vector[2]
+        x_theta = -camera_angle
+        z_theta = 0
+        y_theta = 0
 
 
+        a = translation_vector[0]
+        b = translation_vector[1]
+        c = translation_vector[2]
+
+        a1 = a * math.cos(z_theta) - b * math.sin(z_theta)
+        # print a1
+        b1 = a * math.sin(z_theta) + b * math.cos(z_theta)
+        # print b1
+        c1 = c
+
+        c2 = c1 * math.cos(y_theta) - a1 * math.sin(y_theta)
+        a2 = c1 * math.sin(y_theta) + a1 * math.cos(y_theta)
+        b2 = b1
+
+        b3 = b2 * math.cos(x_theta) - c2 * math.sin(x_theta)
+        c3 = b2 * math.sin(x_theta) + c2 * math.cos(x_theta)
+        a3 = a2
+
+
+        # a3 += translation_vector[0]
+        # b3 += translation_vector[1]
+
+        print "(a3, b3, c3) = ", (a3, b3, c3)
         print format(rotation_vector * 57)  # radians (x,y,z)
         print format(translation_vector)  # arbitrary units...only valuable insofar as the ratio of coordinates are scaled correctly. (x,y,z)
 
