@@ -11,13 +11,35 @@ author: parker
 this is a proof-of-concept script that identifies a potential "landing platform" and  uses perspective transforms to calculate
 the pose (position/orientation). This is the rotation matrix and the Translation matrix. Currently I am just printing this data
 to a terminal and displaying a few edited images using cv2.show(). returns nothing
-
-To see the math used check this Repos readme
 """
 
 def callback(x):
     #the cv2.createTrackbar() requires callback param
     pass
+
+#TODO
+def calibrate_gimbal():
+    """
+    come up with a way to run a calibration sequence at startup. For now just set Yaw and Pitch to global variables
+    :return: returns nothing
+    """
+    pass
+#TODO
+def get_current_gimbal():
+    """
+    :return: should just return the current pitch&yaw of the gimbal.
+    """
+    pass
+#TODO
+def update_gimbal_pid(servoPitch_pos, servoYaw_pos, bounded_rect_coords):
+    """
+    :param servoPitch_pos: servos current Pitch. Use global variables to update position
+    :param servoYaw_pos_pos: servos current Yaw. Use global variables to update position
+    :param bounded_rect_coords: use bounded_rect_coords instead of sorted_beacons so that we can update gimbal with less than 4 beacons.
+    :return: returns nothing
+    """
+    pass
+
 
 def filter_rectangles(sort_rect):
     #return 4 largest rectangles
@@ -194,6 +216,7 @@ while(True):
     cartesian_coords = convert_to_cartesian(bounded_rect_cords)
     #now that we have exact coordinates we can identify which is which by ordering them (upper right, upper left, lower left, lower right)
     sorted_beacons = sort_beacons(cartesian_coords)
+    print sorted_beacons
 
     #if by this point we have not identified all the beacons (in this case its 4) then we can't proceed with the transform
     if len(sorted_beacons) != 4:
@@ -295,12 +318,9 @@ while(True):
         a3 = a2
 
 
-        # a3 += translation_vector[0]
-        # b3 += translation_vector[1]
-
         print "(a3, b3, c3) = ", (a3, b3, c3)
-        print format(rotation_vector * 57)  # radians (x,y,z)
-        print format(translation_vector)  # arbitrary units...only valuable insofar as the ratio of coordinates are scaled correctly. (x,y,z)
+        print format(np.rad2deg(rotation_vector))  # radians (x,y,z)
+        print format(translation_vector)  # calibrated to be cm. this was done in the camera calibration matrix
 
 
     # Just adds extra displays to make real-time tuning and debugging easier
