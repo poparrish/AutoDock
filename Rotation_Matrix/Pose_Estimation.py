@@ -34,7 +34,7 @@ def get_current_gimbal():
 def update_gimbal_pid(servoPitch_pos, servoYaw_pos, bounded_rect_coords):
     """
     :param servoPitch_pos: servos current Pitch. Use global variables to update position
-    :param servoYaw_pos_pos: servos current Yaw. Use global variables to update position
+    :param servoYaw_pos: servos current Yaw. Use global variables to update position
     :param bounded_rect_coords: use bounded_rect_coords instead of sorted_beacons so that we can update gimbal with less than 4 beacons.
     :return: returns nothing
     """
@@ -159,9 +159,10 @@ WIDTH = 640
 HEIGHT = 480
 cap.set(3, WIDTH)#width
 cap.set(4, HEIGHT)#height
+#cap.set(CV_CAP_PROP_EXPOSURE, 0.0)
 
 ilowH = 0
-ihighH = 109
+ihighH = 86
 ilowS = 0
 ihighS = 88
 ilowV = 141
@@ -216,7 +217,7 @@ while(True):
     cartesian_coords = convert_to_cartesian(bounded_rect_cords)
     #now that we have exact coordinates we can identify which is which by ordering them (upper right, upper left, lower left, lower right)
     sorted_beacons = sort_beacons(cartesian_coords)
-    print sorted_beacons
+    #print sorted_beacons
 
     #if by this point we have not identified all the beacons (in this case its 4) then we can't proceed with the transform
     if len(sorted_beacons) != 4:
@@ -233,7 +234,7 @@ while(True):
             (0, 0, 1)
         ], dtype="double")
 
-        print camera_matrix
+        #print camera_matrix
 
         # 2D points (use target)
         target_points = np.array([
@@ -243,25 +244,40 @@ while(True):
             (target[3][0], target[3][1])
         ], dtype="double")
 
-        # 3D points (arbitrary reference frame. Mine was about 2.5ft out 1ft up and angle down roughly 10 degrees)
+
+        #small balls
+        # # 3D points (arbitrary reference frame. Measured dimensions in cm with upperright as origin
         model_points = np.array([
             (0, 0, 0),  # upper right
             (-24.5, 0, 0),  # upper left
-            (-24.5, -14.6, 43.8),  # lower left
-            (0, -14.6, 43.8)
-        ], dtype="double")  # lower right
+            (-24.5, -12.0, 43.8),  # lower left
+            (0, -12.0, 43.8) # lower right
+        ], dtype="double")
+
+        #big balls
+        # # 3D points (arbitrary reference frame. Measured dimensions in cm with upperright as origin
+        # model_points = np.array([
+        #     (0, 0, 0),  # upper right
+        #     (-59.7, 0, 0),  # upper left
+        #     (-59.7, -39.4, 86.3),  # lower left
+        #     (0, -39.4, 87) # lower right
+        # ], dtype="double")
 
         distortion_coeffs = np.zeros((5, 1), dtype="double")  # assume zero distortion...this is practically the case
+        # distortion_coeffs =  np.array([#got these from running calibration.py
+        #     (.13006041, .16734663,.00304074,-.01473097,-1.71723664)
+        # ], dtype="double")
+
 
         #MAGIC HAPPENS HERE. fortunately cv3 has a perspective transform. which allows us to extract the rotation_vector and translation_vector
         #note that the translation vector is from the center of the cameras frame to the camera at the same depth as the 0,0,0 beacon.
-        #This means that to extract depth from the
+
         (success, rotation_vector, translation_vector) = cv2.solvePnP(model_points, target_points, camera_matrix,
                                                                       distortion_coeffs)
 
 
 
-        #adds the bgr axes to the original image for fancy effect
+        #adds the bgr axes to the original image because fancy
         (zAxis, jacobian) = cv2.projectPoints(np.array([(0.0, 0.0, 30.0)]), rotation_vector,
                                               translation_vector, camera_matrix, distortion_coeffs)
         (yAxis, jacobian) = cv2.projectPoints(np.array([(0.0, 30.0, 0.0)]), rotation_vector,
@@ -290,33 +306,37 @@ while(True):
                  (target[0][0], target[0][1]), (255, 255, 255), 2)
 
         # adjust rotation_matrix
-        camera_angle = .455
-        rotation_vector[0] -= np.pi * -1
-        rotation_vector[2] *= -1
+        camera_angle = .486
+        rotation_vector[0] -= np.pi * -1#flip x to correct orientation
+        #rotation_vector[2] *= -1 #flip our z axis so that positive is facing the camera
 
-        x_theta = -camera_angle
-        z_theta = 0
-        y_theta = 0
+        x_theta = -camera_angle #add gimbals reported camera angle to x
+        z_theta = 0#rotation_vector[1]
+        y_theta = 0#rotation_vector[2]
 
 
         a = translation_vector[0]
         b = translation_vector[1]
         c = translation_vector[2]
 
+        #print "no rotation" , (a, b, c)
         a1 = a * math.cos(z_theta) - b * math.sin(z_theta)
-        # print a1
         b1 = a * math.sin(z_theta) + b * math.cos(z_theta)
-        # print b1
         c1 = c
+        #print "x axis rotation", (a1, b1, c1)
 
         c2 = c1 * math.cos(y_theta) - a1 * math.sin(y_theta)
         a2 = c1 * math.sin(y_theta) + a1 * math.cos(y_theta)
         b2 = b1
+        #print "y axis rotation", (a2, b2, c2)
 
         b3 = b2 * math.cos(x_theta) - c2 * math.sin(x_theta)
         c3 = b2 * math.sin(x_theta) + c2 * math.cos(x_theta)
         a3 = a2
 
+        a3 = (math.atan(rotation_vector[2])*c3)-translation_vector[0]
+
+        #print "z axis rotation", (a3, b3, c3)
 
         print "(a3, b3, c3) = ", (a3, b3, c3)
         print format(np.rad2deg(rotation_vector))  # radians (x,y,z)
@@ -328,10 +348,10 @@ while(True):
     cv2.line(original, (0, HEIGHT/2),(WIDTH,HEIGHT/2), (100,100,0), lineThickness)
     cv2.line(original, (WIDTH/2, 0), (WIDTH/2, HEIGHT), (100,100,0), lineThickness)
     frame = cv2.bitwise_and(frame, frame, mask=mask)
-    cv2.imshow('blank_slate', blank_slate)
+    #cv2.imshow('blank_slate', blank_slate)
     cv2.imshow('mask', mask)
     cv2.imshow('image', original)
-    k = cv2.waitKey(1) & 0xFF  # large wait time to remove freezing
+    k = cv2.waitKey(1) & 0xFF  # set frame refresh here
     if k == 113 or k == 27:
         break
 

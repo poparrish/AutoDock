@@ -38,11 +38,11 @@ while(True):
         # Draw and display the corners
         img = cv2.drawChessboardCorners(frame, (7,6), corners2,ret)
         ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
-        # print mtx
-        # print dist #[k1,k2,p1,p2,k3]p is tangential distortion (angled) k is radial distortion
-        print rvecs
-        print tvecs
+        print mtx
+        print dist #[k1,k2,p1,p2,k3]p is tangential distortion (angled) k is radial distortion
+        # print rvecs
+        # print tvecs
         cv2.imshow('img',img)
-        cv2.waitKey(500)
+        cv2.waitKey(1000)
 
 cv2.destroyAllWindows()
