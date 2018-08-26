@@ -146,8 +146,6 @@ def distance_between(coord1, coord2):
 def slice_coords(beacon):
     return beacon[0:2]
 
-
-
 APPROACH_DIST_CM = 200  # desired distance from platform
 
 def calculate_translation(y_theta, z_dist):
@@ -156,46 +154,7 @@ def calculate_translation(y_theta, z_dist):
     approach_rel_angle = math.asin(APPROACH_DIST_CM * math.sin(y_theta) / approach_dist)
 
     # return 90 - rotation_vector[1] + math.degrees(approach_rel_angle)
-
     return math.degrees(-y_theta - math.degrees(approach_rel_angle))
-
-#ratio references measured in cm
-CAM_HEIGHT = 74
-CAM_DIST = 160
-CAM_ANGLE = 90 - (math.atan(CAM_DIST/CAM_HEIGHT) * 100)
-PIX_RS = 403
-PIX_LS = 400
-PIX_TS = 200
-PIX_BS = 342
-#RS = 43.8
-#LS = 42.5
-
-print 'camangle'
-print CAM_ANGLE
-cap = cv2.VideoCapture(1)
-cv2.namedWindow('image')
-WIDTH = 640
-HEIGHT = 480
-cap.set(3, WIDTH)#width
-cap.set(4, HEIGHT)#height
-#cap.set(CV_CAP_PROP_EXPOSURE, 0.0)
-
-ilowH = 0
-ihighH = 185
-ilowS = 0
-ihighS = 125
-ilowV = 216
-ihighV = 255
-# create trackbars for color change
-cv2.createTrackbar('lowH','image',ilowH,255,callback)
-cv2.createTrackbar('highH','image',ihighH,255,callback)
-cv2.createTrackbar('lowS','image',ilowS,255,callback)
-cv2.createTrackbar('highS','image',ihighS,255,callback)
-cv2.createTrackbar('lowV','image',ilowV,255,callback)
-cv2.createTrackbar('highV','image',ihighV,255,callback)
-
-
-
 
 
 def calcAngles():
@@ -399,13 +358,6 @@ def calcAngles():
         #print "(a3, b3, c3) = ", (a3, b3, c3)
 
 
-
-        translation = calculate_translation(rotation_vector[2], translation_vector[2])
-        print "translation = ", translation
-        # print "(a3, b3, c3) = ", (a3, b3, c3)
-        print "rotation_vector", format(np.rad2deg(rotation_vector))  # radians (x,y,z)
-        print "translation_vector", format(translation_vector)  # calibrated to be cm. this was done in the camera calibration matrix
-
         #c3+=translation_vector[1]
         #
         # try:
@@ -456,6 +408,10 @@ def start():
     #
     #     r.sleep()
     # rospy.spin()
+
+
+
+
 
 
 

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ca9f5b36-3e96-4cfe-8826-e96d7bfb63e1" name="Default" comment="" />
+    <list default="true" id="ca9f5b36-3e96-4cfe-8826-e96d7bfb63e1" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,11 +36,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+<<<<<<< Updated upstream
       <file leaf-file-name="Pose_Estimation.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-1485">
               <caret line="174" lean-forward="true" selection-start-line="174" selection-end-line="174" />
+=======
+      <file leaf-file-name="Pose_Estimation.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="243">
+              <caret line="206" column="25" selection-start-line="206" selection-start-column="25" selection-end-line="206" selection-end-column="25" />
+>>>>>>> Stashed changes
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -45,10 +56,17 @@
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="TeensyWrite_node.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/ROS/TeensyWrite_node.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-1691">
+=======
+      <file leaf-file-name="TeensyWrite_node.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/ROS/TeensyWrite_node.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+>>>>>>> Stashed changes
               <caret line="53" column="17" lean-forward="true" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
             </state>
           </provider>
@@ -92,6 +110,8 @@
       <find>filter</find>
       <find>display_sorted_beacons</find>
       <find>cartesian_To</find>
+      <find>format</find>
+      <find>camera_angle</find>
     </findStrings>
     <replaceStrings>
       <replace>target</replace>
@@ -108,6 +128,10 @@
         <option value="$PROJECT_DIR$/camera.py" />
         <option value="$PROJECT_DIR$/calibrate_camera.py" />
         <option value="$PROJECT_DIR$/Distance_Calc_Test.py" />
+        <option value="$PROJECT_DIR$/../Rotation_Matrix/Calibration.py" />
+        <option value="$PROJECT_DIR$/../../Bender/VectorSteering/ROS/VectorCalcTriStick_node.py" />
+        <option value="$PROJECT_DIR$/../../Bender/VectorSteering/ROS/TeensyWrite_node.py" />
+        <option value="$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py" />
       </list>
     </option>
   </component>
@@ -138,7 +162,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -169,6 +193,14 @@
       <option name="presentableId" value="Default" />
       <updated>1534001021194</updated>
     </task>
+    <task id="LOCAL-00001" summary="Adjust rotation matrices">
+      <created>1534714218963</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1534714218964</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -204,17 +236,55 @@
       <window_info anchor="bottom" id="Python Console" order="7" />
     </layout>
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Adjust rotation matrices" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adjust rotation matrices" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../Bender/VectorSteering/VectorCalcCSVlogger.py</url>
+          <line>1</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="5" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="1995">
           <caret line="133" column="24" selection-start-line="133" selection-start-column="24" selection-end-line="133" selection-end-column="24" />
         </state>
@@ -242,6 +312,25 @@
     <entry file="file://$PROJECT_DIR$/homography.py" />
     <entry file="file://$PROJECT_DIR$/calibrate_camera.py" />
     <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
+=======
+        <state relative-caret-position="4860">
+          <caret line="329" column="5" lean-forward="true" selection-start-line="329" selection-start-column="5" selection-end-line="329" selection-end-column="5" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/VectorCalcCSVlogger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#22#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+>>>>>>> Stashed changes
     <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Calibration.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
@@ -252,43 +341,148 @@
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/VectorCalcCSVlogger.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="73">
           <caret line="166" column="53" lean-forward="true" selection-start-line="166" selection-start-column="53" selection-end-line="166" selection-end-column="53" />
           <folding>
             <element signature="e#22#33#0" expanded="true" />
+=======
+    <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/ROS/VectorCalcTriStick_node.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="16" column="35" selection-start-line="16" selection-start-column="35" selection-end-line="16" selection-end-column="35" />
+          <folding>
+            <element signature="e#22#53#0" expanded="true" />
+>>>>>>> Stashed changes
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/ROS/VectorCalcTriStick_node.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="831">
           <caret line="140" lean-forward="true" selection-start-line="140" selection-end-line="140" />
           <folding>
             <element signature="e#22#53#0" expanded="true" />
+=======
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4950">
+          <caret line="330" lean-forward="true" selection-start-line="330" selection-end-line="330" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/VectorCalcCSVlogger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#22#33#0" expanded="true" />
+>>>>>>> Stashed changes
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation_ROS.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="26" column="7" lean-forward="true" selection-start-line="26" selection-start-column="7" selection-end-line="26" selection-end-column="7" />
+=======
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Calibration.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="27" column="30" selection-start-line="27" selection-start-column="30" selection-end-line="27" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+>>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="-1485">
           <caret line="174" lean-forward="true" selection-start-line="174" selection-end-line="174" />
+=======
+        <state relative-caret-position="4785">
+          <caret line="319" column="63" selection-start-line="319" selection-start-column="63" selection-end-line="319" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/VectorCalcCSVlogger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+>>>>>>> Stashed changes
           <folding>
-            <element signature="e#0#10#0" expanded="true" />
+            <element signature="e#22#33#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
+=======
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Calibration.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="7" column="68" lean-forward="true" selection-start-line="7" selection-start-column="68" selection-end-line="7" selection-end-column="68" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4275">
+          <caret line="285" column="99" selection-start-line="285" selection-start-column="99" selection-end-line="285" selection-end-column="99" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Calibration.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="7" column="68" lean-forward="true" selection-start-line="7" selection-start-column="68" selection-end-line="7" selection-end-column="68" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/VectorCalcCSVlogger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#22#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3510">
+          <caret line="234" lean-forward="true" selection-start-line="234" selection-end-line="234" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2085">
+          <caret line="139" lean-forward="true" selection-start-line="139" selection-end-line="139" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1995">
+          <caret line="133" column="24" selection-start-line="133" selection-start-column="24" selection-end-line="133" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+>>>>>>> Stashed changes
     <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
     <entry file="file://$PROJECT_DIR$/camera.py" />
     <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
@@ -311,10 +505,57 @@
     <entry file="file://$PROJECT_DIR$/homography.py" />
     <entry file="file://$PROJECT_DIR$/calibrate_camera.py" />
     <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/ROS/TeensyWrite_node.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1691">
           <caret line="53" column="17" lean-forward="true" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
+=======
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Calibration.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="27" column="30" selection-start-line="27" selection-start-column="30" selection-end-line="27" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/VectorCalcCSVlogger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="73">
+          <caret line="166" column="53" lean-forward="true" selection-start-line="166" selection-start-column="53" selection-end-line="166" selection-end-column="53" />
+          <folding>
+            <element signature="e#22#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/ROS/TeensyWrite_node.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="53" column="17" lean-forward="true" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/ROS/VectorCalcTriStick_node.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="831">
+          <caret line="140" lean-forward="true" selection-start-line="140" selection-end-line="140" />
+          <folding>
+            <element signature="e#22#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="243">
+          <caret line="206" column="25" selection-start-line="206" selection-start-column="25" selection-end-line="206" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+>>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
