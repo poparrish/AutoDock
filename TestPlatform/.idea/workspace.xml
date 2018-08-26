@@ -9,8 +9,76 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DockManager">
+    <window id="1">
+      <content type="file-editors">
+        <state>
+          <leaf>
+            <file leaf-file-name="VectorCalcTriStick_node.py" pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/ROS/VectorCalcTriStick_node.py">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="831">
+                    <caret line="140" lean-forward="true" selection-start-line="140" selection-end-line="140" />
+                    <folding>
+                      <element signature="e#22#53#0" expanded="true" />
+                    </folding>
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+  </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="Pose_Estimation.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1485">
+              <caret line="174" lean-forward="true" selection-start-line="174" selection-end-line="174" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TeensyWrite_node.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/ROS/TeensyWrite_node.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1691">
+              <caret line="53" column="17" lean-forward="true" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="VectorCalcCSVlogger.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/VectorCalcCSVlogger.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="73">
+              <caret line="166" column="53" lean-forward="true" selection-start-line="166" selection-start-column="53" selection-end-line="166" selection-end-column="53" />
+              <folding>
+                <element signature="e#22#33#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Calibration.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Calibration.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="27" column="30" selection-start-line="27" selection-start-column="30" selection-end-line="27" selection-end-column="30" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -29,6 +97,9 @@
       <replace>target</replace>
     </replaceStrings>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -46,11 +117,13 @@
     <option name="width" value="934" />
     <option name="height" value="1056" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -62,12 +135,16 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/../Rotation_Matrix" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -96,24 +173,35 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="986" y="24" width="934" height="1056" extended-state="4" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15631692" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.32930845" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" weight="0.32901832" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32972974" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.22702703" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15631692" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info anchor="bottom" id="Python Console" order="7" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -125,127 +213,108 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py">
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3795">
-          <caret line="253" lean-forward="true" selection-start-line="253" selection-end-line="253" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="1995">
+          <caret line="133" column="24" selection-start-line="133" selection-start-column="24" selection-end-line="133" selection-end-column="24" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/camera.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="28" column="16" lean-forward="true" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2040">
-          <caret line="141" column="55" selection-start-line="141" selection-start-column="55" selection-end-line="141" selection-end-column="55" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
+    <entry file="file://$PROJECT_DIR$/camera.py" />
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
     <entry file="file://$PROJECT_DIR$/homography.py" />
-    <entry file="file://$PROJECT_DIR$/camera.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="28" column="16" lean-forward="true" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2115">
-          <caret line="141" column="55" lean-forward="true" selection-start-line="141" selection-start-column="55" selection-end-line="141" selection-end-column="55" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/camera.py" />
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
     <entry file="file://$PROJECT_DIR$/homography.py" />
-    <entry file="file://$PROJECT_DIR$/camera.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="28" column="16" lean-forward="true" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="18" selection-start-line="1" selection-start-column="18" selection-end-line="1" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/camera.py" />
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
     <entry file="file://$PROJECT_DIR$/homography.py" />
-    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="18" lean-forward="true" selection-start-line="1" selection-start-column="18" selection-end-line="1" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
     <entry file="file://$PROJECT_DIR$/homography.py" />
-    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
     <entry file="file://$PROJECT_DIR$/Rotation_Matrices_Test.py" />
-    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
     <entry file="file://$PROJECT_DIR$/Rotation_Matrices_Test.py" />
-    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
     <entry file="file://$PROJECT_DIR$/Rotation_Matrices_Test.py" />
-    <entry file="file://$PROJECT_DIR$/camera.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="28" column="16" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/camera.py" />
     <entry file="file://$PROJECT_DIR$/homography.py" />
-    <entry file="file://$PROJECT_DIR$/calibrate_camera.py">
+    <entry file="file://$PROJECT_DIR$/calibrate_camera.py" />
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Calibration.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="97">
-          <caret line="14" column="59" lean-forward="true" selection-start-line="14" selection-start-column="59" selection-end-line="14" selection-end-column="59" />
+        <state relative-caret-position="375">
+          <caret line="27" column="30" selection-start-line="27" selection-start-column="30" selection-end-line="27" selection-end-column="30" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py">
+    <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/VectorCalcCSVlogger.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="9" column="14" lean-forward="true" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
+        <state relative-caret-position="73">
+          <caret line="166" column="53" lean-forward="true" selection-start-line="166" selection-start-column="53" selection-end-line="166" selection-end-column="53" />
+          <folding>
+            <element signature="e#22#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/ROS/VectorCalcTriStick_node.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="831">
+          <caret line="140" lean-forward="true" selection-start-line="140" selection-end-line="140" />
+          <folding>
+            <element signature="e#22#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation_ROS.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="26" column="7" lean-forward="true" selection-start-line="26" selection-start-column="7" selection-end-line="26" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Rotation_Matrix/Pose_Estimation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1485">
+          <caret line="174" lean-forward="true" selection-start-line="174" selection-end-line="174" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
+    <entry file="file://$PROJECT_DIR$/camera.py" />
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
+    <entry file="file://$PROJECT_DIR$/homography.py" />
+    <entry file="file://$PROJECT_DIR$/camera.py" />
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
+    <entry file="file://$PROJECT_DIR$/homography.py" />
+    <entry file="file://$PROJECT_DIR$/camera.py" />
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
+    <entry file="file://$PROJECT_DIR$/homography.py" />
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
+    <entry file="file://$PROJECT_DIR$/homography.py" />
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
+    <entry file="file://$PROJECT_DIR$/Rotation_Matrices_Test.py" />
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
+    <entry file="file://$PROJECT_DIR$/Rotation_Matrices_Test.py" />
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
+    <entry file="file://$PROJECT_DIR$/Rotation_Matrices_Test.py" />
+    <entry file="file://$PROJECT_DIR$/camera.py" />
+    <entry file="file://$PROJECT_DIR$/homography.py" />
+    <entry file="file://$PROJECT_DIR$/calibrate_camera.py" />
+    <entry file="file://$PROJECT_DIR$/Distance_Calc_Test.py" />
+    <entry file="file://$PROJECT_DIR$/../../Bender/VectorSteering/ROS/TeensyWrite_node.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1691">
+          <caret line="53" column="17" lean-forward="true" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
         </state>
       </provider>
     </entry>
