@@ -140,6 +140,18 @@ def distance_between(coord1, coord2):
 def slice_coords(beacon):
     return beacon[0:2]
 
+
+APPROACH_DIST_CM = 200  # desired distance from platform
+
+
+def calculate_translation(y_theta, z_dist):
+    # find dist to approach point using law of cosines
+    approach_dist = math.sqrt(APPROACH_DIST_CM ** 2 + z_dist ** 2 - 2 * APPROACH_DIST_CM * z_dist * math.cos(y_theta))
+    approach_rel_angle = math.asin(APPROACH_DIST_CM * math.sin(y_theta) / approach_dist)
+
+    # return 90 - rotation_vector[1] + math.degrees(approach_rel_angle)
+    return -y_theta - math.degrees(approach_rel_angle)
+
 #ratio references measured in cm
 CAM_HEIGHT = 74
 CAM_DIST = 160
@@ -162,10 +174,10 @@ cap.set(4, HEIGHT)#height
 #cap.set(CV_CAP_PROP_EXPOSURE, 0.0)
 
 ilowH = 0
-ihighH = 86
+ihighH = 185
 ilowS = 0
-ihighS = 88
-ilowV = 141
+ihighS = 125
+ilowV = 216
 ihighV = 255
 # create trackbars for color change
 cv2.createTrackbar('lowH','image',ilowH,255,callback)
@@ -338,10 +350,11 @@ while(True):
 
         #print "z axis rotation", (a3, b3, c3)
 
-        print "(a3, b3, c3) = ", (a3, b3, c3)
-        print format(np.rad2deg(rotation_vector))  # radians (x,y,z)
-        print format(translation_vector)  # calibrated to be cm. this was done in the camera calibration matrix
-
+        translation = calculate_translation(rotation_vector[2], translation_vector[2])
+        print "translation = ", translation
+        # print "(a3, b3, c3) = ", (a3, b3, c3)
+        print "rotation_vector", format(np.rad2deg(rotation_vector))  # radians (x,y,z)
+        print "translation_vector", format(translation_vector)  # calibrated to be cm. this was done in the camera calibration matrix
 
     # Just adds extra displays to make real-time tuning and debugging easier
     lineThickness = 1
