@@ -5,6 +5,7 @@ from operator import itemgetter
 from PIL import Image
 import PIL.ImageOps
 
+from calc_pose import calculate_translation
 
 """
 author: parker
@@ -140,17 +141,6 @@ def distance_between(coord1, coord2):
 def slice_coords(beacon):
     return beacon[0:2]
 
-
-APPROACH_DIST_CM = 200  # desired distance from platform
-
-
-def calculate_translation(y_theta, z_dist):
-    # find dist to approach point using law of cosines
-    approach_dist = math.sqrt(APPROACH_DIST_CM ** 2 + z_dist ** 2 - 2 * APPROACH_DIST_CM * z_dist * math.cos(y_theta))
-    approach_rel_angle = math.asin(APPROACH_DIST_CM * math.sin(y_theta) / approach_dist)
-
-    # return 90 - rotation_vector[1] + math.degrees(approach_rel_angle)
-    return -y_theta - math.degrees(approach_rel_angle)
 
 #ratio references measured in cm
 CAM_HEIGHT = 74
