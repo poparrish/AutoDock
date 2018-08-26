@@ -150,6 +150,7 @@ PIX_RS = 403
 PIX_LS = 400
 PIX_TS = 200
 PIX_BS = 342
+APPROACH_DIST_CM = 200
 #RS = 43.8
 #LS = 42.5
 
@@ -340,7 +341,7 @@ while(True):
 
         #print "z axis rotation", (a3, b3, c3)
 
-        translation = calculate_translation(rotation_vector[2], translation_vector[2])
+        translation = calculate_translation(rotation_vector[2], translation_vector[2], APPROACH_DIST_CM)
         print "translation = ", translation
         # print "(a3, b3, c3) = ", (a3, b3, c3)
         print "rotation_vector", format(np.rad2deg(rotation_vector))  # radians (x,y,z)
