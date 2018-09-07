@@ -5,9 +5,26 @@ from operator import itemgetter
 from PIL import Image
 import PIL.ImageOps
 
+import RPi.GPIO as GPIO
+import time
+
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
+
+GPIO.setmode(GPIO.BOARD)
+
+GPIO.setup(11,GPIO.OUT)
+GPIO.setup(12,GPIO.OUT)
+
+x_gimb = GPIO.PWM(11,50)
+y_gimb = GPIO.PWM(12,50)
+
+x_gimb_pos = 8.2
+y_gimb_pos = 4
+
+x_gimb.start(x_gimb_pos)
+y_gimb.start(y_gimb_pos)
 
 """
 author: parker
@@ -42,6 +59,27 @@ def update_gimbal_pid(servoPitch_pos, servoYaw_pos, bounded_rect_coords):
     :return: returns nothing
     """
     pass
+
+def reorient_gimbal(x_avg, y_avg):
+    
+    global x_gimb_pos
+    global y_gimb_pos
+    
+    if y_avg < -10:
+        # move gimbal up
+        y_gimb_pos += 0.1
+    
+    if y_avg > 10:
+        # move gimbal down
+        y_gimb_pos -= 0.1
+        
+    if x_avg > 10:
+        # move gimbal left
+        x_gimb_pos -= 0.1
+        
+    if x_avg < -10:
+        # move gimbal right
+        x_gimb_pos += 0.1
     
 
 def filter_rectangles(sort_rect):
@@ -128,7 +166,7 @@ def average_beacons(sorted_beacons):
         return (x_avg,y_avg)
     
     except TypeError:
-        return None
+        return (0,0)
 
 
 def get_bounded_rect_coords(cartesian_beacons):
@@ -176,9 +214,9 @@ PIX_BS = 342
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
-camera.resolution = (320, 240)
+camera.resolution = (640, 480)
 camera.framerate = 32
-rawCapture = PiRGBArray(camera, size=(320, 240))
+rawCapture = PiRGBArray(camera, size=(640, 480))
  
 # allow the camera to warmup
 time.sleep(0.1)
@@ -188,8 +226,8 @@ print 'camangle'
 print CAM_ANGLE
 ##cap = cv2.VideoCapture(0)
 cv2.namedWindow('image')
-WIDTH = 320
-HEIGHT = 240
+WIDTH = 640
+HEIGHT = 480
 ##cap.set(3, WIDTH)#width
 ##cap.set(4, HEIGHT)#height
 #cap.set(CV_CAP_PROP_EXPOSURE, 0.0)
@@ -253,7 +291,9 @@ for camera_cap in camera.capture_continuous(rawCapture, format="bgr", use_video_
     sorted_beacons = sort_beacons(cartesian_coords)
     #print sorted_beacons
 ## or frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-    average_beacons(sorted_beacons)
+    av_beac = average_beacons(sorted_beacons)
+    print time.clock()
+    reorient_gimbal(av_beac[0], av_beac[1])
 
     #if by this point we have not identified all the beacons (in this case its 4) then we can't proceed with the transform
     if len(sorted_beacons) != 4:
@@ -384,7 +424,7 @@ for camera_cap in camera.capture_continuous(rawCapture, format="bgr", use_video_
     cv2.line(original, (0, HEIGHT/2),(WIDTH,HEIGHT/2), (100,100,0), lineThickness)
     cv2.line(original, (WIDTH/2, 0), (WIDTH/2, HEIGHT), (100,100,0), lineThickness)
     frame = cv2.bitwise_and(frame, frame, mask=mask)
-    # cv2.imshow('blank_slate', blank_slate)
+    cv2.imshow('blank_slate', blank_slate)
     cv2.imshow('mask', mask)
     cv2.imshow('image', original)
     k = cv2.waitKey(1) & 0xFF  # set frame refresh here
@@ -393,4 +433,7 @@ for camera_cap in camera.capture_continuous(rawCapture, format="bgr", use_video_
     
     rawCapture.truncate(0)
 
+x_gimb.stop()
+y_gimb.stop()
+GPIO.cleanup()
 cv2.destroyAllWindows()
