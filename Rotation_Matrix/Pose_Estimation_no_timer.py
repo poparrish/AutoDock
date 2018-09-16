@@ -374,7 +374,7 @@ while(True):
             except:
                 print 'couldnt reconstruct target'
 
-        print "Main loop took %sms" % t.interval
+        #print "Main loop took %sms" % t.interval
         # Just adds extra displays to make real-time tuning and debugging easier
         lineThickness = 1
         cv2.line(original, (0, HEIGHT/2),(WIDTH,HEIGHT/2), (100,100,0), lineThickness)
