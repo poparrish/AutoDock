@@ -4,9 +4,9 @@ import math
 from operator import itemgetter
 from PIL import Image
 import PIL.ImageOps
-
-from Rotation_Matrix.timer import Timer
+from buildTarget import *
 from calc_pose import calculate_translation
+
 """
 author: parker
 this is a proof-of-concept script that identifies a potential "landing platform" and  uses perspective transforms to calculate
@@ -14,11 +14,9 @@ the pose (position/orientation). This is the rotation matrix and the Translation
 to a terminal and displaying a few edited images using cv2.show(). returns nothing
 """
 
-
 def callback(x):
     #the cv2.createTrackbar() requires callback param
     pass
-
 
 #TODO
 def calibrate_gimbal():
@@ -27,16 +25,12 @@ def calibrate_gimbal():
     :return: returns nothing
     """
     pass
-
-
 #TODO
 def get_current_gimbal():
     """
     :return: should just return the current pitch&yaw of the gimbal.
     """
     pass
-
-
 #TODO
 def update_gimbal_pid(servoPitch_pos, servoYaw_pos, bounded_rect_coords):
     """
@@ -48,18 +42,17 @@ def update_gimbal_pid(servoPitch_pos, servoYaw_pos, bounded_rect_coords):
     pass
 
 
-def filter_rectangles(sort_rect):
+def filter_rectangles(sort_rect, num_rect):
     #return 4 largest rectangles
-    sorted_area = sorted(sort_rect, key=itemgetter(4))
+    sorted_area = sorted(sort_rect, key = itemgetter(4))
     sorted_area.reverse()
-    if len(sorted_area) > 4:
+    if len(sorted_area) > num_rect:
         for i in sorted_area:
             sorted_area = sorted_area[:-1]
-            if len(sorted_area) == 4:
+            if len(sorted_area) == num_rect:
                 break
     return_rectangles = sorted_area
     return return_rectangles
-
 
 def convert_to_cartesian(beacons):
     i = 0
@@ -67,10 +60,10 @@ def convert_to_cartesian(beacons):
     # print beacons
     for beacon in beacons:
         #convert x
-        if beacon[0] > WIDTH / 2:
-            beacon[0] = beacon[0] - WIDTH / 2
-        elif beacon[0] < WIDTH / 2:
-            beacon[0] = WIDTH / 2 - beacon[0]
+        if beacon[0] > WIDTH/2:
+            beacon[0] = beacon[0]-WIDTH/2
+        elif beacon[0] < WIDTH/2:
+            beacon[0] = WIDTH/2-beacon[0]
             beacon[0] *= -1
         else:
             beacon[0] = 0
@@ -80,36 +73,35 @@ def convert_to_cartesian(beacons):
         # print 'array val'
         # print beacons[i][0]
         #convert y
-        if beacon[1] > HEIGHT / 2:
-            beacon[1] = beacon[1] - HEIGHT / 2
+        if beacon[1] > HEIGHT/2:
+            beacon[1] = beacon[1]-HEIGHT/2
             beacon[1] *= -1
-        elif beacon[1] < HEIGHT / 2:
-            beacon[1] = HEIGHT / 2 - beacon[1]
+        elif beacon[1] < HEIGHT/2:
+            beacon[1] = HEIGHT/2-beacon[1]
         else:
             beacon[1] = 0
         beacons[i][1] = beacon[1]
-        i += 1
+        i+=1
     # print 'default to cartesian out'
     # print beacons
     return beacons
-
 
 def cartesian_to_default(sorted_beacons):
     for beacon in sorted_beacons:
         #convert x
         if beacon[0] > 0:
-            beacon[0] += WIDTH / 2
+            beacon[0] += WIDTH/2
         elif beacon[0] < 0:
             beacon[0] *= -1
-            beacon[0] = WIDTH / 2 - beacon[0]
+            beacon[0] = WIDTH/2 - beacon[0]
         else:
-            beacon[0] = WIDTH / 2
+            beacon[0] = WIDTH/2
         #convert y
         if beacon[1] > 0:
-            beacon[1] = HEIGHT / 2 - beacon[1]
+            beacon[1] = HEIGHT/2 - beacon[1]
         elif beacon[1] < 0:
             beacon[1] *= -1
-            beacon[1] = HEIGHT / 2 + beacon[1]
+            beacon[1] = HEIGHT/2 + beacon[1]
         else:
             beacon[1] = HEIGHT
     # print 'cartesian_to_default out'
@@ -117,41 +109,34 @@ def cartesian_to_default(sorted_beacons):
     printable_coords = sorted_beacons
     return printable_coords
 
-
 def get_bounded_rect_coords(cartesian_beacons):
     for coords in cartesian_beacons:
-        xcoord = coords[0] + coords[2] / 2
-        ycoord = coords[1] + coords[3] / 2
+        xcoord = coords[0] + coords[2]/2
+        ycoord = coords[1] + coords[3]/2
         coords[0] = xcoord
         coords[1] = ycoord
     bounded_rect_cords = cartesian_beacons
     return bounded_rect_cords
 
-
 def sort_beacons(cartesian_coords):
     sorted_by_y = sorted(cartesian_coords, key=itemgetter(1))
-    sorted_by_y.reverse()  #smallest to largest
+    sorted_by_y.reverse()#smallest to largest
     try:
         #now we are now smallest to largest y, swap slots 0-1 and 2-3 if necessary to get x in order
-        if (sorted_by_y[0][0] < sorted_by_y[1][0]):  #if first x is smaller than second x
+        if(sorted_by_y[0][0] < sorted_by_y[1][0]):#if first x is smaller than second x
             sorted_by_y[0], sorted_by_y[1] = sorted_by_y[1], sorted_by_y[0]
-        if (sorted_by_y[2][0] > sorted_by_y[3][0]):  #if first x is smaller than second x
+        if(sorted_by_y[2][0] > sorted_by_y[3][0]):#if first x is smaller than second x
             sorted_by_y[2], sorted_by_y[3] = sorted_by_y[3], sorted_by_y[2]
     except IndexError:
-        sorted_by_y = [0, 0, 0, 0, 0]
+        sorted_by_y = [0,0,0,0,0]
     return sorted_by_y
-
 
 def distance_between(coord1, coord2):
     try:
-        difference = math.sqrt(
-            (math.fabs((coord1[0] - coord2[0]) * (coord1[0] - coord2[0]))) +
-            math.fabs((coord1[1] - coord2[1]) * (coord1[1] - coord2[1]))
-        )
+        difference = math.sqrt((math.fabs((coord1[0]-coord2[0])*(coord1[0]-coord2[0]))) + math.fabs((coord1[1]-coord2[1])*(coord1[1]-coord2[1])))
     except TypeError or ValueError:
         difference = 0
     return difference
-
 
 def slice_coords(beacon):
     return beacon[0:2]
@@ -160,140 +145,151 @@ def slice_coords(beacon):
 #ratio references measured in cm
 CAM_HEIGHT = 74
 CAM_DIST = 160
-CAM_ANGLE = 90 - (math.atan(CAM_DIST / CAM_HEIGHT) * 100)
+CAM_ANGLE = 90 - (math.atan(CAM_DIST/CAM_HEIGHT) * 100)
 PIX_RS = 403
 PIX_LS = 400
 PIX_TS = 200
 PIX_BS = 342
-APPROACH_DIST_CM = 200
 #RS = 43.8
 #LS = 42.5
 
-ilowH = 0
-ihighH = 185
-ilowS = 0
-ihighS = 125
-ilowV = 216
-ihighV = 255
-
+print 'camangle'
+print CAM_ANGLE
+cap = cv2.VideoCapture(1)
+cv2.namedWindow('image')
 WIDTH = 640
 HEIGHT = 480
+cap.set(3, WIDTH)#width
+cap.set(4, HEIGHT)#height
 
 
-def create_window():
-    cv2.namedWindow('image')
+ilowH = 0
+ihighH = 126
+ilowS = 0
+ihighS = 124
+ilowV = 143
+ihighV = 255
+# create trackbars for color change
+cv2.createTrackbar('lowH','image',ilowH,255,callback)
+cv2.createTrackbar('highH','image',ihighH,255,callback)
+cv2.createTrackbar('lowS','image',ilowS,255,callback)
+cv2.createTrackbar('highS','image',ihighS,255,callback)
+cv2.createTrackbar('lowV','image',ilowV,255,callback)
+cv2.createTrackbar('highV','image',ihighV,255,callback)
 
-    cv2.createTrackbar('lowH', 'image', ilowH, 255, callback)
-    cv2.createTrackbar('highH', 'image', ihighH, 255, callback)
-    cv2.createTrackbar('lowS', 'image', ilowS, 255, callback)
-    cv2.createTrackbar('highS', 'image', ihighS, 255, callback)
-    cv2.createTrackbar('lowV', 'image', ilowV, 255, callback)
-    cv2.createTrackbar('highV', 'image', ihighV, 255, callback)
+APPROACH_DIST_CM = 250
 
+while(True):
 
-def start_capture():
-    cap = cv2.VideoCapture(0)
-    cap.set(3, WIDTH)  # width
-    cap.set(4, HEIGHT)  # height
-    # cap.set(CV_CAP_PROP_EXPOSURE, 0.0)
-    return cap
+        # grab the frame
+        ret, frame = cap.read()
+        original = frame
 
+        # get trackbar positions
+        ilowH = cv2.getTrackbarPos('lowH', 'image')
+        ihighH = cv2.getTrackbarPos('highH', 'image')
+        ilowS = cv2.getTrackbarPos('lowS', 'image')
+        ihighS = cv2.getTrackbarPos('highS', 'image')
+        ilowV = cv2.getTrackbarPos('lowV', 'image')
+        ihighV = cv2.getTrackbarPos('highV', 'image')
 
-def process_frame(frame, (low_h, high_h), (low_s, high_s), (low_v, high_v)):
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    lower_hsv = np.array([low_h, low_s, low_v])
-    higher_hsv = np.array([high_h, high_s, high_v])
-    mask = cv2.inRange(frame, lower_hsv, higher_hsv)
-    _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        #filter out the hsv values for the "beacons" we want and create bounding rectangles
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        lower_hsv = np.array([ilowH, ilowS, ilowV])
+        higher_hsv = np.array([ihighH, ihighS, ihighV])
+        mask = cv2.inRange(frame, lower_hsv, higher_hsv)
+        blank_slate = cv2.inRange(frame,0,0)
+        _, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        num_contour = 0
+        sort_rect = []
+        for c in contours:
+            if cv2.contourArea(c) < 1:
+                continue
+            rect = cv2.boundingRect(c)
+            x, y, w, h = rect
+            cv2.rectangle(original, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            num_contour += 1
+            data = [x,y,w,h,w*h]
+            sort_rect.append(data)
 
-    return contours, mask
+        #filters all detected rectangles for only the num_rect largest
+        num_rect = 7
+        beacons = filter_rectangles(sort_rect,num_rect)
+        #get bounded rect coords before we convert to cartesian (makes math easier).
+        bounded_rect_cords = get_bounded_rect_coords(beacons)
+        #now convert to cartesian where (0,0) is at the center of the cameras field of view. OpenCV defaults to 0,0 in upper left corner
+        #cartesian_coords = convert_to_cartesian(bounded_rect_cords)
+        sliced = []
+        #print "pre-slice: ",bounded_rect_cords
+        for _ in bounded_rect_cords:
+            sliced.append(_[:2])
+        #print "sliced: ",sliced
 
+        # Point = namedtuple('Point', 'x y')
+        # points = []
+        # for _ in bounded_rect_cords:
+        #     points.append(Point(_[0], _[1]))
+        # print "POINTS: ",points
 
-def main():
-    cap = start_capture()
-    create_window()
-
-    while True:
-        with Timer() as t:
-            # grab the frame
-            ret, frame = cap.read()
-            frame = cv2.UMat(frame)  # enable OpenCL processing
-            original = frame
-
-            # get trackbar positions
-            h = cv2.getTrackbarPos('lowH', 'image'), cv2.getTrackbarPos('highH', 'image')
-            s = cv2.getTrackbarPos('lowS', 'image'), cv2.getTrackbarPos('highS', 'image')
-            v = cv2.getTrackbarPos('lowV', 'image'), cv2.getTrackbarPos('highV', 'image')
-
-            # filter out the hsv values for the "beacons" we want and
-            blank_slate = cv2.inRange(frame, 0, 0)
-            contours, mask = process_frame(frame, h, s, v)
-            num_contour = 0
-            sort_rect = []
-            for c in contours:
-                if cv2.contourArea(c) < 40:
-                    continue
-                rect = cv2.boundingRect(c)
-                x, y, w, h = rect
-                cv2.rectangle(original, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                num_contour += 1
-                data = [x, y, w, h, w * h]
-                sort_rect.append(data)
-
-            # filters all detected rectangles for only the 4 largest
-            beacons = filter_rectangles(sort_rect)
-            # get bounded rect coords before we convert to cartesian (makes math easier).
-            bounded_rect_cords = get_bounded_rect_coords(beacons)
-            # now convert to cartesian where (0,0) is at the center of the cameras field of view. OpenCV defaults to 0,0 in upper left corner
-            cartesian_coords = convert_to_cartesian(bounded_rect_cords)
-            # now that we have exact coordinates we can identify which is which by ordering them (upper right, upper left, lower left, lower right)
-            sorted_beacons = sort_beacons(cartesian_coords)
-            # print sorted_beacons
-
-            # if by this point we have not identified all the beacons (in this case its 4) then we can't proceed with the transform
-            if len(sorted_beacons) != 4:
-                print 'no image lock'
-            else:
+        if len(sliced) != 7:
+            print 'no image lock'
+        else:
+            target_size = getTarget(bounded_rect_cords)
+            try:
+                # print len(size)
+                target = getTarget(bounded_rect_cords)
                 # to perform the cv2.PnP transform OpenCV needs the default coordinate settings so we revert the sorted beacons back to default coordinate system
-                target = cartesian_to_default(sorted_beacons)
+                # target = cartesian_to_default(sorted_beacons)
 
                 # Camera settings these basically assume a perfect projection plane and will need to be calibrated. just fillers for now
                 focal_length = 510
-                camera_matrix = np.array(
-                    [(focal_length, 0, WIDTH / 2), (0, focal_length, HEIGHT / 2), (0, 0, 1)], dtype="double"
-                )
+                camera_matrix = np.array([
+                    (focal_length, 0, WIDTH / 2),
+                    (0, focal_length, HEIGHT / 2),
+                    (0, 0, 1)
+                ], dtype="double")
 
                 # print camera_matrix
 
-                # 2D points (use target)
-                target_points = np.array(
-                    [
-                        (target[0][0], target[0][1]), (target[1][0], target[1][1]), (target[2][0], target[2][1]),
-                        (target[3][0], target[3][1])
-                    ],
-                    dtype="double"
-                )
+                # # 2D points (use target)
+                # target_points = np.array([
+                #     (target[0][0], target[0][1]),
+                #     (target[1][0], target[1][1]),
+                #     (target[2][0], target[2][1]),
+                #     (target[3][0], target[3][1])
+                # ], dtype="double")
 
-                # small balls
-                # # 3D points (arbitrary reference frame. Measured dimensions in cm with upperright as origin
-                model_points = np.array(
-                    [
-                        (0, 0, 0),  # upper right
-                        (-24.5, 0, 0),  # upper left
-                        (-24.5, -12.0, 43.8),  # lower left
-                        (0, -12.0, 43.8)  # lower right
-                    ],
-                    dtype="double"
-                )
-
-                # big balls
-                # # 3D points (arbitrary reference frame. Measured dimensions in cm with upperright as origin
+                # #small balls
+                # # # 3D points (arbitrary reference frame. Measured dimensions in cm with upperright as origin
                 # model_points = np.array([
                 #     (0, 0, 0),  # upper right
-                #     (-59.7, 0, 0),  # upper left
-                #     (-59.7, -39.4, 86.3),  # lower left
-                #     (0, -39.4, 87) # lower right
+                #     (-24.5, 0, 0),  # upper left
+                #     (-24.5, -12.0, 43.8),  # lower left
+                #     (0, -12.0, 43.8) # lower right
                 # ], dtype="double")
+
+                # 2D points (use target)
+                target_points = np.array([
+                    (target[0][0][0], target[0][0][1]),
+                    (target[0][1][0], target[0][1][1]),
+                    (target[0][2][0], target[0][2][1]),
+                    (target[0][3][0], target[0][3][1]),
+                    (target[0][4][0], target[0][4][1]),
+                    (target[0][5][0], target[0][5][1]),
+                    (target[0][6][0], target[0][6][1])
+                ], dtype="double")
+
+                # ur balz
+                # 3D points (arbitrary reference frame. Measured dimensions in cm with upper middle as origin
+                model_points = np.array([
+                    (-45.7, 0, 86.3),
+                    (-48.2, 0, 41.3),
+                    (-45.7, 0, 2.5),
+                    (0, 0, 0),
+                    (45.7, 0, 2.5),
+                    (48.2, 0, 41.3),
+                    (45.7, 0, 86.3)
+                ], dtype="double")
 
                 distortion_coeffs = np.zeros(
                     (5, 1), dtype="double"
@@ -375,21 +371,19 @@ def main():
                     translation_vector
                 )  # calibrated to be cm. this was done in the camera calibration matrix
 
-        print "Main loop took %sms" % t.interval
+            except:
+                print 'couldnt reconstruct target'
+
         # Just adds extra displays to make real-time tuning and debugging easier
         lineThickness = 1
-        cv2.line(original, (0, HEIGHT / 2), (WIDTH, HEIGHT / 2), (100, 100, 0), lineThickness)
-        cv2.line(original, (WIDTH / 2, 0), (WIDTH / 2, HEIGHT), (100, 100, 0), lineThickness)
+        cv2.line(original, (0, HEIGHT/2),(WIDTH,HEIGHT/2), (100,100,0), lineThickness)
+        cv2.line(original, (WIDTH/2, 0), (WIDTH/2, HEIGHT), (100,100,0), lineThickness)
         frame = cv2.bitwise_and(frame, frame, mask=mask)
-        # cv2.imshow('blank_slate', blank_slate)
+        #cv2.imshow('blank_slate', blank_slate)
         cv2.imshow('mask', mask)
         cv2.imshow('image', original)
         k = cv2.waitKey(1) & 0xFF  # set frame refresh here
         if k == 113 or k == 27:
             break
 
-    cv2.destroyAllWindows()
-
-
-if __name__ == '__main__':
-    main()
+cv2.destroyAllWindows()
