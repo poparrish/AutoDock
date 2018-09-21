@@ -21,3 +21,13 @@
 ##Simulator Setup
 
 TODO
+
+Things needed for camera to work:
+sudo apt-get install gstreamer1.0-* libgstreamer1.0-*
+https://github.com/PX4/sitl_gazebo
+
+https://github.com/PX4/Devguide/blob/master/en/simulation/gazebo.md#how-to-view-gazebo-video
+
+
+https://docs.qgroundcontrol.com/en/getting_started/download_and_install.html
+https://dev.qgroundcontrol.com/en/getting_started/

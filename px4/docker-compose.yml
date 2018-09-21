@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  simulator:
+    container_name: px4_sim
+    build:
+      context: simulator-nvidia
+      dockerfile: Dockerfile
+    privileged: true
+    environment:
+      DISPLAY: ":0"
+    ports:
+    - "14556:14556/udp"
+    - "5600:5600/udp"
+    volumes:
+    - "../:/home/user/AutoDock" # Mount this repo in the user's home dir
+    - "/tmp/.X11-unix:/tmp/.X11-unix:ro"
+
+volumes:
+  sim-firmware:
