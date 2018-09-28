@@ -1,17 +1,24 @@
 # PX4 Dev Environment Setup
 
-1.) Install docker
+https://dev.px4.io/en/simulation/gazebo.html
 
-2.) Install docker-compose
+### 1.) Install Docker
 
-3.) Download NVidia drivers
+https://tuleap-documentation.readthedocs.io/en/latest/developer-guide/quick-start/install-docker.html
+
+### 2.) Download Graphics Drivers
 
 Download drivers from https://www.nvidia.com/object/Unix.html
-Put the *.run file in this directory and rename it to NVIDIA-DRIVER.run
+
+Note: make sure to match the current driver version: `nvidia-smi`
+
+Put the *.run file in the /simulator-nvidia directory and rename it to NVIDIA-DRIVER.run
 
 TODO Link to guide
 
-4.) Build the simulator `docker-compose build simulator`
+### 3.) Build simulator image
+
+In this directory, run `docker-compose build`
 
 This will automatically pull docker images and setup your environment locally.
 
@@ -19,7 +26,7 @@ If you are on BSU's network, there's a good chance the container will fail to bu
 It would appear that BSU blocks most public DNS servers (8.8.8.8, 1.1.1.1, etc), so
 you have to make sure you're using the default.
 
-Refer to this question to point Docker at the correct DNS server:
+Refer to this post to point Docker at the correct DNS server:
 https://stackoverflow.com/a/40516974
 
 
@@ -29,11 +36,9 @@ Run the following command outside of docker. This will give docker access to the
 
 `xhost +`
 
-To start the container, run `docker-compose up -d`
+To start the container, run `docker-compose up -d simulator`
 
-To connect to the container, run the `./connect` script.
+To connect to the simulator, run the `./connect` script.
 
-Once inside the container, you can cd to `/home/user/AutoDock/px4/scripts` and
+Once inside the container, you can cd to `/home/user/scripts` and
 run `./sim.sh` to start the simulator.
-
-To start QGroundControl, run `./qgroundcontrol.sh`

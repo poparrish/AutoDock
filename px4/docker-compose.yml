@@ -1,6 +1,17 @@
 version: "3"
 
 services:
+#  mavros:
+#    container_name: px4_ros
+#    build:
+#      context: mavros
+#      dockerfile: Dockerfile
+##    ports:
+##    - "11311:11311"
+#    volumes:
+#    - "../:/home/user/AutoDock:ro" # Mount the repo in the user's home dir
+#    - "./scripts/:/home/user/scripts"
+
   simulator:
     container_name: px4_sim
     build:
@@ -13,8 +24,6 @@ services:
     - "14556:14556/udp"
     - "5600:5600/udp"
     volumes:
-    - "../:/home/user/AutoDock" # Mount this repo in the user's home dir
+    - "../:/home/user/AutoDock:ro" # Mount the repo in the user's home dir
+    - "./scripts/:/home/user/scripts"
     - "/tmp/.X11-unix:/tmp/.X11-unix:ro"
-
-volumes:
-  sim-firmware:
