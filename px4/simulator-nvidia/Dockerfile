@@ -17,6 +17,10 @@ RUN make install && ldconfig
 WORKDIR /src/firmware
 RUN git clone https://github.com/PX4/Firmware .
 RUN git checkout v1.8.0 && git submodule update --init --recursive
+# TODO Less hacky way to enable video streaming. Mabye mount firmware in its own volume?
+RUN sed -i 's/"enable gstreamer plugin" "OFF"/"enable gstreamer plugin" "ON"/g' Tools/sitl_gazebo/CMakeLists.txt \
+    && sed -i 's/<!--<gui>/<gui>/g' Tools/sitl_gazebo/worlds/typhoon_h480.world \
+    && sed -i 's/<\/gui>-->/<\/gui>/g' Tools/sitl_gazebo/worlds/typhoon_h480.world
 RUN make posix_sitl_default
 RUN make posix_sitl_default sitl_gazebo
 
@@ -37,7 +41,9 @@ COPY NVIDIA-DRIVER.run .
 RUN ./NVIDIA-DRIVER.run -a -N --ui=none --no-kernel-module && rm ./NVIDIA-DRIVER.run
 
 ## Setup ROS
-#RUN echo "source /opt/ros/kinetic/setup.bash" >> /root/.bashrc
+# This is a hack to use our custom build of OpenCV
+RUN rm /opt/ros/kinetic/lib/python2.7/dist-packages/cv2.so
+RUN echo "source /opt/ros/kinetic/setup.bash" >> /root/.bashrc
 
 WORKDIR /home/user
 
