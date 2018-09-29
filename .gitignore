@@ -104,5 +104,9 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+### IntelliJ
+.idea/
+*.iml
+
 ### ROS
 devel/

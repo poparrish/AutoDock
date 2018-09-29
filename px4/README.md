@@ -6,7 +6,7 @@ https://dev.px4.io/en/simulation/gazebo.html
 
 https://tuleap-documentation.readthedocs.io/en/latest/developer-guide/quick-start/install-docker.html
 
-### 2.) Download Graphics Drivers
+### 2.) Download Graphics Drivers (NVidia)
 
 Download drivers from https://www.nvidia.com/object/Unix.html
 
@@ -14,7 +14,7 @@ Note: make sure to match the current driver version: `nvidia-smi`
 
 Put the *.run file in the /simulator-nvidia directory and rename it to NVIDIA-DRIVER.run
 
-TODO Link to guide
+TODO Link to guide for other drivers
 
 ### 3.) Build simulator image
 

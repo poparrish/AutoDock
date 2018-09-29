@@ -24,6 +24,5 @@ services:
     - "14556:14556/udp"
     - "5600:5600/udp"
     volumes:
-    - "../:/home/user/AutoDock:ro" # Mount the repo in the user's home dir
-    - "./scripts/:/home/user/scripts"
+    - "../:/root/AutoDock"
     - "/tmp/.X11-unix:/tmp/.X11-unix:ro"
