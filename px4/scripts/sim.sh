@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 
-cd /root/AutoDock/px4/firmware
+firmware="/src/firmware"
 
-# Enable virtual camera
-sed -i 's/"enable gstreamer plugin" "OFF"/"enable gstreamer plugin" "ON"/g' Tools/sitl_gazebo/CMakeLists.txt
-sed -i 's/<!--<gui>/<gui>/g' Tools/sitl_gazebo/worlds/typhoon_h480.world
-sed -i 's/<\/gui>-->/<\/gui>/g' Tools/sitl_gazebo/worlds/typhoon_h480.world
+# Make sure virtual camera is enabled (requires rebuild)
+sed -i 's/"enable gstreamer plugin" "OFF"/"enable gstreamer plugin" "ON"/g' "$firmware/Tools/sitl_gazebo/CMakeLists.txt"
 
+# Copy custom world files
+cp -rf ../gazebo/* "$firmware/Tools/sitl_gazebo"
+
+# Build & launch simulation
+cd "$firmware"
 if [[ $* == *--clean* ]]
 then
     make clean

@@ -13,6 +13,13 @@ RUN cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH
 RUN make -j8
 RUN make install && ldconfig
 
+## Clone and build PX4 firmware
+WORKDIR /src/firmware
+RUN git clone https://github.com/PX4/Firmware .
+RUN git checkout v1.8.0 && git submodule update --init --recursive
+RUN make posix_sitl_default
+RUN make posix_sitl_default sitl_gazebo
+
 ## Install virtual camera runtime dependencies
 RUN apt-get update
 RUN apt-get install -y libudev-dev libsdl2-dev gstreamer1.0-* libgstreamer1.0-*
