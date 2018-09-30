@@ -1,3 +1,0 @@
-[submodule "px4/firmware"]
-	path = px4/firmware
-	url = https://github.com/PX4/Firmware

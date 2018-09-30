@@ -14,7 +14,9 @@ Note: make sure to match the current driver version: `nvidia-smi`
 
 Put the *.run file in the /simulator-nvidia directory and rename it to NVIDIA-DRIVER.run
 
-TODO Link to guide for other drivers
+If you encounter problems with your graphics drivers, refer to this guide:
+https://dev.px4.io/en/test_and_ci/docker.html#graphics-driver-issues
+http://gernotklingler.com/blog/howto-get-hardware-accelerated-opengl-support-docker/
 
 ### 3.) Build simulator image
 

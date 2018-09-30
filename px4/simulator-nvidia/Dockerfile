@@ -17,6 +17,7 @@ RUN make install && ldconfig
 WORKDIR /src/firmware
 RUN git clone https://github.com/PX4/Firmware .
 RUN git checkout v1.8.0 && git submodule update --init --recursive
+RUN sed -i 's/"enable gstreamer plugin" "OFF"/"enable gstreamer plugin" "ON"/g' "Tools/sitl_gazebo/CMakeLists.txt"
 RUN make posix_sitl_default
 RUN make posix_sitl_default sitl_gazebo
 

@@ -17,6 +17,3 @@
 ### Format code
 
 `./format.sh`
-
-##Simulator Setup
-
