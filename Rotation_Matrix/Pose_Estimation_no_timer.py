@@ -4,7 +4,7 @@ import math
 from operator import itemgetter
 from PIL import Image
 import PIL.ImageOps
-from buildTarget import *
+from buildTarget import getTarget
 from calc_pose import calculate_translation
 
 """
@@ -143,7 +143,7 @@ def slice_coords(beacon):
 
 
 #ratio references measured in cm
-CAM_HEIGHT = 74
+CAM_HEIGHT = 80
 CAM_DIST = 160
 CAM_ANGLE = 90 - (math.atan(CAM_DIST/CAM_HEIGHT) * 100)
 PIX_RS = 403
@@ -163,11 +163,11 @@ cap.set(3, WIDTH)#width
 cap.set(4, HEIGHT)#height
 
 
-ilowH = 0
-ihighH = 126
+ilowH = 31
+ihighH = 157
 ilowS = 0
-ihighS = 124
-ilowV = 143
+ihighS = 110
+ilowV = 145
 ihighV = 255
 # create trackbars for color change
 cv2.createTrackbar('lowH','image',ilowH,255,callback)
@@ -223,7 +223,7 @@ while(True):
         #print "pre-slice: ",bounded_rect_cords
         for _ in bounded_rect_cords:
             sliced.append(_[:2])
-        #print "sliced: ",sliced
+        print "sliced: ",sliced
 
         # Point = namedtuple('Point', 'x y')
         # points = []
@@ -234,7 +234,7 @@ while(True):
         if len(sliced) != 7:
             print 'no image lock'
         else:
-            target_size = getTarget(bounded_rect_cords)
+            #target_size = getTarget(bounded_rect_cords)
             try:
                 # print len(size)
                 target = getTarget(bounded_rect_cords)
@@ -268,15 +268,28 @@ while(True):
                 #     (0, -12.0, 43.8) # lower right
                 # ], dtype="double")
 
+                # # 2D points (use target)
+                # print "target: ",target
+                # target_points = np.array([
+                #     (target[0][0][0], target[0][0][1]),
+                #     (target[0][1][0], target[0][1][1]),
+                #     (target[0][2][0], target[0][2][1]),
+                #     (target[0][3][0], target[0][3][1]),
+                #     (target[0][4][0], target[0][4][1]),
+                #     (target[0][5][0], target[0][5][1]),
+                #     (target[0][6][0], target[0][6][1])
+                # ], dtype="double")
+
                 # 2D points (use target)
+                print "target: ", target
                 target_points = np.array([
-                    (target[0][0][0], target[0][0][1]),
-                    (target[0][1][0], target[0][1][1]),
-                    (target[0][2][0], target[0][2][1]),
-                    (target[0][3][0], target[0][3][1]),
-                    (target[0][4][0], target[0][4][1]),
-                    (target[0][5][0], target[0][5][1]),
-                    (target[0][6][0], target[0][6][1])
+                    (target[0][0], target[0][1]),
+                    (target[1][0], target[1][1]),
+                    (target[2][0], target[2][1]),
+                    (target[3][0], target[3][1]),
+                    (target[4][0], target[4][1]),
+                    (target[5][0], target[5][1]),
+                    (target[6][0], target[6][1])
                 ], dtype="double")
 
                 # ur balz
@@ -314,22 +327,22 @@ while(True):
                 (xAxis, jacobian) = cv2.projectPoints(
                     np.array([(30.0, 0.0, 0.0)]), rotation_vector, translation_vector, camera_matrix, distortion_coeffs
                 )
-                p1z = (int(target_points[0][0]), int(target_points[0][1]))
+                p1z = (int(target_points[3][0]), int(target_points[3][1]))
                 p2z = (int(zAxis[0][0][0]), int(zAxis[0][0][1]))
                 cv2.line(original, p1z, p2z, (255, 0, 0), 2)  # (blue)
-                p1y = (int(target_points[0][0]), int(target_points[0][1]))
+                p1y = (int(target_points[3][0]), int(target_points[3][1]))
                 p2y = (int(yAxis[0][0][0]), int(yAxis[0][0][1]))
                 cv2.line(original, p1y, p2y, (0, 255, 0), 2)  # (green)
-                p1x = (int(target_points[0][0]), int(target_points[0][1]))
+                p1x = (int(target_points[3][0]), int(target_points[3][1]))
                 p2x = (int(xAxis[0][0][0]), int(xAxis[0][0][1]))
                 cv2.line(original, p1x, p2x, (0, 0, 255), 2)  # (red)
 
-                # this just traces a rectangle around the target so we know if sort_beacons worked right.
-                center = [0, 0]
-                cv2.line(blank_slate, (target[0][0], target[0][1]), (target[1][0], target[1][1]), (255, 255, 255), 2)
-                cv2.line(blank_slate, (target[1][0], target[1][1]), (target[2][0], target[2][1]), (255, 255, 255), 2)
-                cv2.line(blank_slate, (target[2][0], target[2][1]), (target[3][0], target[3][1]), (255, 255, 255), 2)
-                cv2.line(blank_slate, (target[3][0], target[3][1]), (target[0][0], target[0][1]), (255, 255, 255), 2)
+                # # this just traces a rectangle around the target so we know if sort_beacons worked right.
+                # center = [0, 0]
+                # cv2.line(blank_slate, (target[0][0], target[0][1]), (target[1][0], target[1][1]), (255, 255, 255), 2)
+                # cv2.line(blank_slate, (target[1][0], target[1][1]), (target[2][0], target[2][1]), (255, 255, 255), 2)
+                # cv2.line(blank_slate, (target[2][0], target[2][1]), (target[3][0], target[3][1]), (255, 255, 255), 2)
+                # cv2.line(blank_slate, (target[3][0], target[3][1]), (target[0][0], target[0][1]), (255, 255, 255), 2)
 
                 # adjust rotation_matrix
                 camera_angle = .486
@@ -363,8 +376,8 @@ while(True):
 
                 # print "z axis rotation", (a3, b3, c3)
 
-                translation = calculate_translation(rotation_vector[2], translation_vector[2], APPROACH_DIST_CM)
-                print "translation = ", translation
+                # translation = calculate_translation(rotation_vector[2], translation_vector[2], APPROACH_DIST_CM)
+                # print "translation = ", translation
                 # print "(a3, b3, c3) = ", (a3, b3, c3)
                 print "rotation_vector", format(np.rad2deg(rotation_vector))  # radians (x,y,z)
                 print "translation_vector", format(
@@ -374,7 +387,7 @@ while(True):
             except:
                 print 'couldnt reconstruct target'
 
-        #print "Main loop took %sms" % t.interval
+
         # Just adds extra displays to make real-time tuning and debugging easier
         lineThickness = 1
         cv2.line(original, (0, HEIGHT/2),(WIDTH,HEIGHT/2), (100,100,0), lineThickness)
