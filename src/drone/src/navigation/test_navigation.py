@@ -1,7 +1,7 @@
 # coding=utf-8
 import math
 from nose.tools import assert_almost_equal
-from Rotation_Matrix.calc_pose import calculate_translation
+from navigation import calculate_translation
 
 
 # calculations:

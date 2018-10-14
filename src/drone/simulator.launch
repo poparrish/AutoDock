@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<launch>
+  <!-- mavros -->
+  <include file="$(find mavros)/launch/px4.launch">
+    <arg name="fcu_url" value="udp://:14540@127.0.0.1:14557"/>
+  </include>
+
+  <!-- virtual camera configuration -->
+  <param name="h_min" value="0"/>
+  <param name="h_max" value="255"/>
+  <param name="s_min" value="0"/>
+  <param name="s_max" value="255"/>
+  <param name="v_min" value="0"/>
+  <param name="v_max" value="255"/>
+  <param name="capture_device" value="udpsrc port=5600 caps=&quot;application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264&quot; ! rtph264depay ! avdec_h264 ! videoconvert ! appsink"/>
+
+  <node name="pose_estimation" pkg="drone" type="pose_estimation_node.py" output="screen"/>
+</launch>

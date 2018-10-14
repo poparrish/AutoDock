@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  gazebo:
+    container_name: gazebo
+    build:
+      context: .
+    network_mode: "host"
+    privileged: true
+    environment:
+      DISPLAY: ":0"
+    ports:
+    - "14556:14556/udp"
+    - "5600:5600/udp"
+    volumes:
+    - "../../src/drone:/root/catkin_ws/src/drone"
+    - "./scripts/:/root/scripts:ro"
+    - "/tmp/.X11-unix:/tmp/.X11-unix:ro"

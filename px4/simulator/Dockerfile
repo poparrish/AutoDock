@@ -36,9 +36,15 @@ RUN ./NVIDIA-DRIVER.run -a -N --ui=none --no-kernel-module && rm ./NVIDIA-DRIVER
 ## Setup ROS
 # This is a hack to use our custom build of OpenCV
 RUN rm /opt/ros/kinetic/lib/python2.7/dist-packages/cv2.so
-RUN echo "source /opt/ros/kinetic/setup.bash" >> /root/.bashrc
 
-WORKDIR /root/AutoDock/px4/scripts
+WORKDIR /root/catkin_ws/
+RUN bash -c "source /opt/ros/kinetic/setup.bash && \
+             mkdir src && \
+             catkin_make"
+
+RUN echo "source /root/catkin_ws/devel/setup.bash" >> /root/.bashrc
+
+WORKDIR /root/scripts
 
 ## Keep the container alive
 CMD ["bash", "-c", "tail -f /dev/null"]

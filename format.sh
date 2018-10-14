@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 source venv/bin/activate
-yapf --style style.ini -i **/*.py
+yapf --style style.ini -ir src/

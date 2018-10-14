@@ -1,12 +1,9 @@
-from collections import namedtuple
-import matplotlib.pyplot as plt
-import random
-from itertools import cycle
 import math
+from collections import namedtuple
 from operator import itemgetter
 
 
-def findOrientation(origin,p1,p2):
+def findOrientation(origin, p1, p2):
     '''
     Returns the orientation of the Point p1 with regards to Point p2 using origin.
     Negative if p1 is clockwise of p2 (asssuming origin is where the clock "hands originate.
@@ -56,17 +53,18 @@ def findHull(bounded_rect_coords):
 
         far_point = p1
 
-        for p2 in points: #find second point to compare to
+        for p2 in points:  #find second point to compare to
             #ensure we arent comparing to self or pivot points
             if p2 is point or p2 is p1:
                 continue
             else:
-                direction = findOrientation(point,far_point,p2)
+                direction = findOrientation(point, far_point, p2)
                 if direction > 0:
                     far_point = p2
         hull_points.append(far_point)
         point = far_point
     return hull_points
+
 
 def main():
     """
@@ -96,7 +94,7 @@ def main():
     #points = [[471,198],[158,188],[316,205],[474,121],[426,68],[325,59],[221,64]]
 
     hull = findHull(points)
-    hull.pop()#hull wraps to check completion so pop to duplicate
+    hull.pop()  #hull wraps to check completion so pop to duplicate
     # print "hull",hull
     groups, size = findGroups(hull)
     # print "groups",groups
@@ -110,7 +108,6 @@ def main():
         target = reconstructTarget(groupsNoDoubleLinks)
 
         print "target", target
-
 
 
 def getTarget(points):
@@ -143,7 +140,7 @@ def getTarget(points):
     hull = findHull(points)
     hull.pop()
     #print "hull",hull
-    groups,size = findGroups(hull)
+    groups, size = findGroups(hull)
     #print "groups",groups
     try:
         groupedAngles = findGroupAngles(groups)
@@ -157,32 +154,35 @@ def getTarget(points):
         # groupsWithDuplicates = findDuplicatesPerGroup(topCandidates)
         # groupsNoDoubleLinks = findDoubleLink(groupsWithDuplicates)
         # target = reconstructTarget(groupsNoDoubleLinks)
-        return [target,size]
+        return [target, size]
     except:
-        return [[0,0,0,0,0,0,0],0]
+        return [[0, 0, 0, 0, 0, 0, 0], 0]
 
 
 def findDoubleLink(groups):
-    L1 = [] #list of groups with 3 duplicates
-    L2 = [] #everything less than 3 duplicates
+    L1 = []  #list of groups with 3 duplicates
+    L2 = []  #everything less than 3 duplicates
     try:
         for line in groups:
             if line[4] == 3:
                 L1.append(line)
             else:
                 L2.append(line)
-        if len(L2) > 2: #no double links so order is fine. fail fast
+        if len(L2) > 2:  #no double links so order is fine. fail fast
 
             return groups
-        else: # there is a double link we need to address
+        else:  # there is a double link we need to address
             for dup in L1:
                 d = 0
                 for single in L2:
                     for point in dup:
-                        if single[0] == point: d+=1
-                        if single[1] == point: d+=1
-                        if single[2] == point: d+=1
-                    if d == 2: #found the bad double link
+                        if single[0] == point:
+                            d += 1
+                        if single[1] == point:
+                            d += 1
+                        if single[2] == point:
+                            d += 1
+                    if d == 2:  #found the bad double link
                         L1.remove(dup)
                         L2.append(L1[0])
                         L2[0].pop(4)
@@ -195,9 +195,10 @@ def findDoubleLink(groups):
         groups[0].pop(4)
         groups[1].pop(4)
         groups[2].pop(4)
-        return findDuplicatesPerGroup(groups)#if false positive
+        return findDuplicatesPerGroup(groups)  #if false positive
     except:
         print "index error in findDoubleLink"
+
 
 def reconstructTarget(groups):
     """
@@ -234,7 +235,6 @@ def reconstructTarget(groups):
                     line.pop()
                     left = line
 
-
         target = [right, base, left]
         try:  # pop the duplicates
             coords = []
@@ -248,7 +248,6 @@ def reconstructTarget(groups):
             print "index error in reconstructTarget"
     except:
         print "nonetype error in reconstruct target"
-
 
 
 def findDuplicatesPerGroup(groups):
@@ -273,12 +272,11 @@ def findDuplicatesPerGroup(groups):
         num_duplicates = 0
         for duplicate in L2:
             for point in line:
-                if not isinstance(point,float):
-                    if point == duplicate:#is duplicate point and not float
+                if not isinstance(point, float):
+                    if point == duplicate:  #is duplicate point and not float
                         num_duplicates += 1
 
         line.append(num_duplicates)
-
 
     return groups
 
@@ -295,8 +293,9 @@ def findGroups(hull_points):
     print "hull_size: ", hull_size
     start_node = 0
     groups = []
-    for i in range(len(
-            hull_points)):  # with the modulo this is effectively a circularLinkedList. I getting linked combinations around the hull
+    for i in range(
+        len(hull_points)
+    ):  # with the modulo this is effectively a circularLinkedList. I getting linked combinations around the hull
         if (start_node == hull_size):
             break
         comb = []
@@ -322,15 +321,20 @@ def findGroupAngles(groups):
     for g in groups:
         # find m or the angle of intersect with the x axis (this is commonly referred to as m)
 
-        m = [slope(g[0][0], g[1][0], g[0][1], g[1][1]),  # 0 & 1
-             slope(g[1][0], g[2][0], g[1][1], g[2][1])]  # 1 & 2
+        m = [
+            slope(g[0][0], g[1][0], g[0][1], g[1][1]),  # 0 & 1
+            slope(g[1][0], g[2][0], g[1][1], g[2][1])
+        ]  # 1 & 2
 
-        dist = [findDist(g[0][0], g[1][0], g[0][1], g[1][1]),  # 0 & 1
-                findDist(g[1][0], g[2][0], g[1][1], g[2][1])]  # 1 & 2
+        dist = [
+            findDist(g[0][0], g[1][0], g[0][1], g[1][1]),  # 0 & 1
+            findDist(g[1][0], g[2][0], g[1][1], g[2][1])
+        ]  # 1 & 2
         # for some fucked up reason a ratio of 1/3 or x%3 == 0 makes theta 0
         # so i just add an insignificant float to m[1] and that fixes it
         try:
-            if ((m[0] / m[1] == 3) or (m[1] / m[0] == 3) or ((m[1] * m[0]) % 3 == 0)):m[1] += .00001
+            if ((m[0] / m[1] == 3) or (m[1] / m[0] == 3) or ((m[1] * m[0]) % 3 == 0)):
+                m[1] += .00001
         except ZeroDivisionError:
             pass
 
@@ -414,6 +418,5 @@ def findDist(x1, x2, y1, y2):
     return [float(x2 - x1), float(y2 - y1)]
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
-

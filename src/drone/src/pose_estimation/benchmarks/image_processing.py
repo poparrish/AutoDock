@@ -1,7 +1,7 @@
 import cv2
 from benchmarker import Benchmarker
 
-from Rotation_Matrix.Pose_Estimation import process_frame
+from pose_estimation import process_frame
 
 cv2.ocl.setUseOpenCL(True)
 print "Supports OpenCL: %s\nEnabled: %s\n" % (cv2.ocl.haveOpenCL(), cv2.ocl.useOpenCL())

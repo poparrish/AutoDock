@@ -1,5 +1,6 @@
 # Based on MAVROS Offboard control example
 # https://dev.px4.io/en/ros/mavros_offboard.html
+# Arms the Quad and flies to a pre-defined location
 
 import rospy
 from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
