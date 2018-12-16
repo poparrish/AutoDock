@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 import rospy
 import pose_estimation
+from pose_estimation import *
 from geometry_msgs.msg import PoseStamped, TwistStamped, Twist, Vector3
 from mavros_msgs.msg import State
 from mavros_msgs.srv import CommandBool, SetMode, CommandBoolRequest, SetModeRequest, StreamRate
@@ -56,18 +57,30 @@ if __name__ == '__main__':
     set_mode(custom_mode="OFFBOARD")
     arm(value=True)
     stream_rate(stream_id=0,message_rate=sr,on_off=1)
+    cap = start_capture(src, False)
 
     while not rospy.is_shutdown():
         try:
-            pose_ret = pose_estimation.main(src=src, calibration=calibration, resize=False)
-            #convert to quaternion
-            pose = Twist(linear=Vector3(x=pose_ret[0][0],y=pose_ret[0][1],z=pose_ret[0][2]),
-                         angular=Vector3(x=pose_ret[1][0],y=pose_ret[1][1],z=pose_ret[1][2]))
+            ret, frame = cap.read()
 
-            #this throws the std_msgs/header at the beginning of each message being published. px4 requires it
-            pose_msg = TwistStamped(twist=pose)
+            try:
+                pose_ret = estimate_pose(frame, calibration)
 
-            p.publish(pose_msg)
+                if pose_ret is None:
+                    print 'no image lock'
+                else:
+                    # convert to quaternion
+                    pose = Twist(linear=Vector3(x=pose_ret[0][0], y=pose_ret[0][1], z=pose_ret[0][2]),
+                                 angular=Vector3(x=pose_ret[1][0], y=pose_ret[1][1], z=pose_ret[1][2]))
+
+                    # this throws the std_msgs/header at the beginning of each message being published. px4 requires it
+                    pose_msg = TwistStamped(twist=pose)
+
+                    p.publish(pose_msg)
+
+            except Exception as e:
+                print 'failed to reconstruct target %s' % e
+                print e
         except Exception as e:
             print 'failed to publish to /custom/vision_pose %s' % e
         rate.sleep()
