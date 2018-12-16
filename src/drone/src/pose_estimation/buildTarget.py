@@ -1,9 +1,12 @@
-import math
 from collections import namedtuple
+import matplotlib.pyplot as plt
+import random
+from itertools import cycle
+import math
 from operator import itemgetter
 
 
-def findOrientation(origin, p1, p2):
+def findOrientation(origin,p1,p2):
     '''
     Returns the orientation of the Point p1 with regards to Point p2 using origin.
     Negative if p1 is clockwise of p2 (asssuming origin is where the clock "hands originate.
@@ -53,18 +56,17 @@ def findHull(bounded_rect_coords):
 
         far_point = p1
 
-        for p2 in points:  #find second point to compare to
+        for p2 in points: #find second point to compare to
             #ensure we arent comparing to self or pivot points
             if p2 is point or p2 is p1:
                 continue
             else:
-                direction = findOrientation(point, far_point, p2)
+                direction = findOrientation(point,far_point,p2)
                 if direction > 0:
                     far_point = p2
         hull_points.append(far_point)
         point = far_point
     return hull_points
-
 
 def main():
     """
@@ -86,26 +88,51 @@ def main():
     # points = [[360, 139], [220,101], [155,63], [489,74], [391, 46], [221, 40], [296,30]]
     # points = [[293,150], [353,123], [183,119], [379,97],[282,75],[228,92],[335,82]]
     # points = [[445,135],[440,104],[432, 169],[336,170],[393,101],[345,107],[333,137]]
-    points = [[395, 92], [223, 36], [313, 55], [280, 186], [93, 97], [363, 142], [160, 146]]
+    #points = [[395, 92], [223, 36], [313, 55], [280, 186], [93, 97], [363, 142], [160, 146]]
+    # points = [[554, 304], [258, 300], [514, 229], [257, 222], [477, 175], [373, 167], [270, 169]]
+    # points = [[546, 251], [259, 242], [512, 177], [259, 167], [376, 115], [273, 116], [480, 124]]
+    #points = [[149, 328], [541, 305], [168, 232], [487, 218], [196, 174], [443, 164], [320, 164]]
 
-    # points = [[361,74],[240,66],[297,74],[248,51],[374,59],[369,44],[266,37]]
+    # points = [[149, 328], [168, 232], [196, 174], [320, 164], [443, 164], [487, 218], [541, 305]]
+    # points = [[610, 344], [437, 345], [269, 331], [269, 245], [508, 192], [299, 190], [401, 190]]
+    #points = [[361,74],[240,66],[297,74],[248,51],[374,59],[369,44],[266,37]]
     # points = [[158, 336], [533, 349], [164, 200], [520, 211], [481, 114], [345, 92], [209, 107]]
     # points = [[131,415],[522,417],[510,253],[130,252],[175,133],[324,110],[472,134]]
     #points = [[471,198],[158,188],[316,205],[474,121],[426,68],[325,59],[221,64]]
 
+    #points = [[450, 214], [568, 109], [298, 195], [602, 35], [206, 173], [478, 44], [376, 56]]
+    #points = [[291, 81], [332, 102], [259, 61], [392, 106], [430, 102], [393, 85], [355, 70]]
+    #points = [[427, 88], [424, 46], [319, 115], [220, 124], [230, 81], [410, 14], [245, 44]]
+    #points = [[238, 185], [239, 288], [227, 386], [168, 375], [126, 185], [120, 343], [123, 265]]
+    # points = [[377, 37], [435, 59], [485, 84], [531, 157], [574, 235], [533, 236], [473, 225]]
+    # points = [[38, 63], [102, 28], [146, 24], [188, 22], [172, 38], [136, 58], [85, 62]]
+    # points = [[372, 67], [410, 64], [449, 63], [547, 152], [521, 165], [484, 172], [414, 119]]
+    points = [[300, 155], [236, 154], [183, 150], [209, 128], [342, 107], [291, 107], [242, 108]]
+
+    #creates a forcedHull of size 6
+    points = [[372, 67], [410, 64], [449, 63], [547, 152], [521, 165], [484, 172], [414, 119]]
+    # points = [[443, 343], [484, 255], [524, 185], [536, 227], [483, 408], [513, 341], [541, 279]]
+    points = [[327, 86], [365, 114], [367, 142], [295, 120], [359, 86], [299, 148], [295, 93]]
+    points = [[24, 476], [549, 131], [563, 163], [539, 181], [473, 137], [511, 197], [498, 118]]
+
+    #has 3 duplicates so it only fixes one of but leaves the other
+    points = [[307, 40], [435, 41], [443, 53], [309, 54], [367, 29], [312, 29], [423, 29]]
+
     hull = findHull(points)
-    hull.pop()  #hull wraps to check completion so pop to duplicate
+    hull.pop()#hull wraps to check completion so pop to duplicate
     # print "hull",hull
-    groups, size = findGroups(hull)
+    convexGroups = forceHullConvexity(hull)
+    groups, size = findGroups(convexGroups)
     # print "groups",groups
     if size != 7:
         target = [0, 0, 0, 0, 0, 0, 0]
     else:
+        #print "convexGroups: ",convexGroups
         groupedAngles = findGroupAngles(groups)
-        topCandidates = findTopCandidates(groupedAngles, 4)
-        groupsNoDoubleLinks = findDuplicatesPerGroup(topCandidates)
-        #groupsNoDoubleLinks = findDoubleLink(groupsWithDuplicates)
-        target = reconstructTarget(groupsNoDoubleLinks)
+        topCandidates = findTopCandidates(groupedAngles, 3)
+        groupsWithDoubleLinks = findDuplicatesPerGroup(topCandidates)
+        #groupsNoDoubleLinks = findDoubleLink(topCandidates)
+        target = reconstructTarget(groupsWithDoubleLinks)
 
         print "target", target
 
@@ -135,17 +162,21 @@ def getTarget(points):
     # points = [[360, 139], [220,101], [155,63], [489,74], [391, 46], [221, 40], [296,30]]
     # points = [[293,150], [353,123], [183,119], [379,97],[282,75],[228,92],[335,82]]
 
-    # points = [[445,135],[440,104],[432, 169],[336,170],[393,101],[345,107],[333,137]]
+    #points = [[445,135],[440,104],[432, 169],[336,170],[393,101],[345,107],[333,137]]
     # points = [[334, 231], [64, 211], [590, 216], [121, 144], [198, 112], [519, 153], [440, 119]]
     hull = findHull(points)
     hull.pop()
     #print "hull",hull
-    groups, size = findGroups(hull)
+    convexGroups = forceHullConvexity(hull)
+
+    groups,size = findGroups(convexGroups)
     #print "groups",groups
     try:
         groupedAngles = findGroupAngles(groups)
         topCandidates = findTopCandidates(groupedAngles, 3)
+        #print "top Candidates: ", topCandidates
         groupsNoDoubleLinks = findDuplicatesPerGroup(topCandidates)
+        #print "duplicatespergroup:",groupsNoDoubleLinks
         #groupsNoDoubleLinks = findDoubleLink(groupsWithDuplicates)
         target = reconstructTarget(groupsNoDoubleLinks)
 
@@ -154,35 +185,121 @@ def getTarget(points):
         # groupsWithDuplicates = findDuplicatesPerGroup(topCandidates)
         # groupsNoDoubleLinks = findDoubleLink(groupsWithDuplicates)
         # target = reconstructTarget(groupsNoDoubleLinks)
-        return [target, size]
+        return target
     except:
-        return [[0, 0, 0, 0, 0, 0, 0], 0]
+        return [[0,0,0,0,0,0,0],0]
 
+def forceHullConvexity(hull):
+    """
+    This is an easy way to reduce the number of checks we have to go through in findGroupAngles.
+    It is a clean way to ensure we never get an exceptional case in the hull that throw off our angle
+    estimations. All it does is check for redundant x or y values indicating zero or infinite slope and
+    if it finds one increments or decrements one of them to remove the "flat edge" from the hull. It is
+    forcing the hull to be convex
+    :param groups: [[pointsx,pointsy]]
+    :return: [[pointsx,pointsy]]
+    """
+    xcoords = []
+    ycoords = []
+    for point in hull:
+        # print point[0]
+        # print point[1]
+        xcoords.append(point[0])
+        ycoords.append(point[1])
+    # print "xcoords",xcoords
+    # print "ycoords",ycoords
+    xseen = []
+    xDuplicates = []
+    yDuplicates = []
+    for i in xcoords:
+        if i not in xseen:
+            dup = findDuplicatesOf(xcoords,i)
+            if dup:
+                xDuplicates.append(dup)
+        xseen.append(i)
+    yseen = []
+    for i in ycoords:
+        if i not in yseen:
+            dup = findDuplicatesOf(ycoords,i)
+            if dup:
+                yDuplicates.append(dup)
+        yseen.append(i)
+
+    forcedHull = []
+    for i in hull:
+        forcedHull.append(list(i))
+
+    # fix coords
+    if xDuplicates:#duplicates we need to address
+        for i in xDuplicates: #may be more than one pair of duplicates
+            first = i[0]
+            second = i[1]
+            if forcedHull[first][1] > forcedHull[second][1]:#check the corresponding y values in dup hull points to see if we need to increment or decrement to maintain convexity
+                forcedHull[first][0]+=1
+            else:
+                forcedHull[first][0]-=1
+    if yDuplicates:
+        for i in yDuplicates:
+            first = i[0]
+            second = i[1]
+            if forcedHull[first][0] > forcedHull[second][0]:
+                forcedHull[first][1]-=1
+            else:
+                forcedHull[first][1]+=1
+    print "xdups: ",xDuplicates
+    print "ydups: ",yDuplicates
+    print "forcedHull: ",forcedHull
+    # Point = namedtuple('Point', 'x y')
+    # points = []
+    # for _ in forcedHull:
+    #     points.append(Point(_[0], _[1]))
+    # print "points: ",points
+
+    return forcedHull
+
+def findDuplicatesOf(seq,item):
+    """
+    reports all locations of duplicates in a sequence
+    :param seq: [list]
+    :param item: item in list
+    :return: index of locations item seen. None if it only one occurance
+    """
+    start_at = -1
+    locs = []
+    while True:
+        try:
+            loc = seq.index(item, start_at + 1)
+        except ValueError:
+            break
+        else:
+            locs.append(loc)
+            start_at = loc
+    if len(locs) == 1:
+        return
+    else:
+        return locs
 
 def findDoubleLink(groups):
-    L1 = []  #list of groups with 3 duplicates
-    L2 = []  #everything less than 3 duplicates
+    L1 = [] #list of groups with 3 duplicates
+    L2 = [] #everything less than 3 duplicates
     try:
         for line in groups:
             if line[4] == 3:
                 L1.append(line)
             else:
                 L2.append(line)
-        if len(L2) > 2:  #no double links so order is fine. fail fast
+        if len(L2) > 2: #no double links so order is fine. fail fast
 
             return groups
-        else:  # there is a double link we need to address
+        else: # there is a double link we need to address
             for dup in L1:
                 d = 0
                 for single in L2:
                     for point in dup:
-                        if single[0] == point:
-                            d += 1
-                        if single[1] == point:
-                            d += 1
-                        if single[2] == point:
-                            d += 1
-                    if d == 2:  #found the bad double link
+                        if single[0] == point: d+=1
+                        if single[1] == point: d+=1
+                        if single[2] == point: d+=1
+                    if d == 2: #found the bad double link
                         L1.remove(dup)
                         L2.append(L1[0])
                         L2[0].pop(4)
@@ -190,15 +307,14 @@ def findDoubleLink(groups):
                         L2[2].pop(4)
                         return findDuplicatesPerGroup(L2)
 
-                d = 0
+                    d = 0
         groups.pop()
         groups[0].pop(4)
         groups[1].pop(4)
         groups[2].pop(4)
-        return findDuplicatesPerGroup(groups)  #if false positive
+        return findDuplicatesPerGroup(groups)#if false positive
     except:
         print "index error in findDoubleLink"
-
 
 def reconstructTarget(groups):
     """
@@ -215,40 +331,37 @@ def reconstructTarget(groups):
     left = []  # 4,5,6
 
     #remove corner group if it exists
-    try:
+    print "groups: ",groups
+    for line in groups:
+        if line[4] == 2:
+            line.pop()
+            line.pop()
+            base = line
+
+    if not base:
+        print "NOBASE!!"
+    else:
         for line in groups:
-            if line[4] == 2:
+            if line[2] == base[0]:
                 line.pop()
                 line.pop()
-                base = line
+                right = line
+            if line[0] == base[2]:
+                line.pop()
+                line.pop()
+                left = line
 
-        if not base:
-            print "NOBASE!!"
-        else:
-            for line in groups:
-                if line[2] == base[0]:
-                    line.pop()
-                    line.pop()
-                    right = line
-                if line[0] == base[2]:
-                    line.pop()
-                    line.pop()
-                    left = line
-
-        target = [right, base, left]
-        try:  # pop the duplicates
-            coords = []
-            for i in target:
-                for j in i:
-                    coords.append(j)
-            coords.pop(2)
-            coords.pop(5)
-            return coords
-        except:
-            print "index error in reconstructTarget"
+    target = [right, base, left]
+    try:  # pop the duplicates
+        coords = []
+        for i in target:
+            for j in i:
+                coords.append(j)
+        coords.pop(2)
+        coords.pop(5)
+        return coords
     except:
-        print "nonetype error in reconstruct target"
-
+        print "index error in reconstructTarget"
 
 def findDuplicatesPerGroup(groups):
     """
@@ -272,14 +385,14 @@ def findDuplicatesPerGroup(groups):
         num_duplicates = 0
         for duplicate in L2:
             for point in line:
-                if not isinstance(point, float):
-                    if point == duplicate:  #is duplicate point and not float
+                if not isinstance(point,float):
+                    if point == duplicate:#is duplicate point and not float
                         num_duplicates += 1
 
         line.append(num_duplicates)
 
-    return groups
 
+    return groups
 
 def findGroups(hull_points):
     """
@@ -293,9 +406,8 @@ def findGroups(hull_points):
     print "hull_size: ", hull_size
     start_node = 0
     groups = []
-    for i in range(
-        len(hull_points)
-    ):  # with the modulo this is effectively a circularLinkedList. I getting linked combinations around the hull
+    for i in range(len(
+            hull_points)):  # with the modulo this is effectively a circularLinkedList. I getting linked combinations around the hull
         if (start_node == hull_size):
             break
         comb = []
@@ -307,7 +419,6 @@ def findGroups(hull_points):
         start_node += 1
 
     return groups, hull_size
-
 
 def findGroupAngles(groups):
     """
@@ -321,20 +432,15 @@ def findGroupAngles(groups):
     for g in groups:
         # find m or the angle of intersect with the x axis (this is commonly referred to as m)
 
-        m = [
-            slope(g[0][0], g[1][0], g[0][1], g[1][1]),  # 0 & 1
-            slope(g[1][0], g[2][0], g[1][1], g[2][1])
-        ]  # 1 & 2
+        m = [slope(g[0][0], g[1][0], g[0][1], g[1][1]),  # 0 & 1
+             slope(g[1][0], g[2][0], g[1][1], g[2][1])]  # 1 & 2
 
-        dist = [
-            findDist(g[0][0], g[1][0], g[0][1], g[1][1]),  # 0 & 1
-            findDist(g[1][0], g[2][0], g[1][1], g[2][1])
-        ]  # 1 & 2
+        dist = [findDist(g[0][0], g[1][0], g[0][1], g[1][1],m),  # 0 & 1
+                findDist(g[1][0], g[2][0], g[1][1], g[2][1],m)]  # 1 & 2
         # for some fucked up reason a ratio of 1/3 or x%3 == 0 makes theta 0
         # so i just add an insignificant float to m[1] and that fixes it
         try:
-            if ((m[0] / m[1] == 3) or (m[1] / m[0] == 3) or ((m[1] * m[0]) % 3 == 0)):
-                m[1] += .00001
+            if ((m[0] / m[1] == 3) or (m[1] / m[0] == 3) or ((m[1] * m[0]) % 3 == 0)):m[1] += .00001
         except ZeroDivisionError:
             pass
 
@@ -347,6 +453,8 @@ def findGroupAngles(groups):
         for t in theta_degrees:
             a.append(t)
 
+
+        #then handle non-zero slopes
         if dist[0][0] > 0 and dist[0][1] > 0 and dist[1][0] < 0 and dist[1][1] > 0:
             angle.append(180 - math.fabs(a[1]) - math.fabs(a[0]))
         elif dist[0][0] > 0 and dist[0][1] > 0 and dist[1][0] > 0 and dist[1][1] > 0:
@@ -363,6 +471,15 @@ def findGroupAngles(groups):
             angle.append(a[1] - a[0])
         elif dist[0][0] < 0 and dist[0][1] < 0 and dist[1][0] > 0 and dist[1][1] < 0:
             angle.append(180 - math.fabs(a[1]) - math.fabs(a[0]))
+        elif dist[0][0] > 0 and dist[0][1] > 0 and dist[1][0] < 0 and dist[1][1] < 0:
+            angle.append(90-math.fabs(a[0])-a[1]+90)
+
+        elif dist[0][0] > 0 and dist[0][1] < 0 and dist[1][0] < 0 and dist[1][1] > 0:
+            angle.append(math.fabs(a[0]+math.fabs(180+a[1])))
+        elif dist[0][0] < 0 and dist[0][1] < 0 and dist[1][0] > 0 and dist[1][1] > 0:
+            angle.append(a[0]-a[1])
+        elif dist[0][0] < 0 and dist[0][1] > 0 and dist[1][0] > 0 and dist[1][1] < 0:
+            angle.append(math.fabs(180+a[1]+a[0]))
         else:
             print 'bad_slope'
     i = 0
@@ -411,12 +528,12 @@ def slope(x1, x2, y1, y2):
     try:
         return float((y2 - y1)) / float((x2 - x1))
     except ZeroDivisionError:
-        return 0
+        return 640#just the VGA height of frame. rounds off float so its not super important
 
 
-def findDist(x1, x2, y1, y2):
-    return [float(x2 - x1), float(y2 - y1)]
+def findDist(x1, x2, y1, y2,m):
+    return [float(x2-x1),float(y2-y1)]
 
 
-if __name__ == "__main__":
+if __name__=="__main__":
     main()
