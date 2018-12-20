@@ -37,3 +37,8 @@ To start the px4 container, run `docker-compose up -d`
 Once the container is running, connect by running `./connect.sh`
 
 After connecting, run `./sim.sh` to start Gazebo and `./ros.sh` to start mavros
+
+# Error troubleshooting
+Errors about being unable to launch control_node.py or pose_estimation_node.py when running `./sim.sh`:
+cd to the catkin_ws/src/drone/src/pose_estimation and `chmod +x control_node.py` and `chmod +x pose_estimation_node.py` 
+These commands give roslaunch the permission to launch these nodes from the simulator.launch file when we run `./ros.sh`
