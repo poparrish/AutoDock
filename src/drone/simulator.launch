@@ -15,4 +15,5 @@
   <param name="capture_device" value="udpsrc port=5600 caps=&quot;application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264&quot; ! rtph264depay ! avdec_h264 ! videoconvert ! appsink"/>
 
   <node name="pose_estimation" pkg="drone" type="pose_estimation_node.py" output="screen"/>
+  <node name="control" pkg="drone" type="control_node.py" output="screen"/>
 </launch>

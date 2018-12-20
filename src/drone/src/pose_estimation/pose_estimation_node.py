@@ -44,20 +44,15 @@ if __name__ == '__main__':
     # subscribes to the 'mavros/state' topic. This has information vital to px4 function like heartbeat, arming, and flight mode
     rospy.Subscriber("mavros/state", State, state_changed)
     src = rospy.get_param("/capture_device", 0)#configures the simulated camera
-    rospy.init_node("Vision_Pose")#creates the node we will publish our /custom/vision_pose topic from
+    rospy.init_node("pose_estimation")#creates the node we will publish our /custom/vision_pose topic from
     # creates publisher p with topic "/custom/vision_pose" of datatype TwistStamped
     p = rospy.Publisher("/custom/vision_pose", data_class=TwistStamped, queue_size=1)
-    arm = rospy.ServiceProxy("mavros/cmd/arming", CommandBool)#proxy service to arm the drones motors
-    set_mode = rospy.ServiceProxy("mavros/set_mode", SetMode)#proxy service to set the mode
-    stream_rate = rospy.ServiceProxy("mavros/set_stream_rate",StreamRate)#proxy service for the node stream rate(unused functionality)
 
     hz = 50
     #sr = 50
     rate = rospy.Rate(hz=hz)#setpoint publishing must be faster than the px4 heartbeat of 2hz
 
-    print "arming..."
-    set_mode(custom_mode="OFFBOARD")#sets the mode to "offboard control"
-    arm(value=True)#sets the motors to armed
+
     cap = start_capture(src, False)#starts the simulated camera
 
     while not rospy.is_shutdown():
