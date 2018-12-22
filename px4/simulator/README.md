@@ -49,7 +49,7 @@ These commands give roslaunch the permission to launch these nodes from the simu
 Errors like  [Err] [Plugin.hh:165] Failed to load plugin
 when running ./sim.sh if you do not specify the environment variable directory which sets the plugin path then ros cant find it.
 If this is your first time running the animation plugin then you will need to open a new terminal outside of gazebo and createa a build directory for C. 
-First cd to your AutoDock-sim/px4/simulator/scripts/gazebo/animatev7
+First cd to your AutoDock-sim/px4/simulator/scripts/gazebo/animatev7.
 Run the following commands:
 `mkdir build`
 `cd build`
