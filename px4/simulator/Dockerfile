@@ -40,9 +40,14 @@ RUN rm /opt/ros/kinetic/lib/python2.7/dist-packages/cv2.so
 WORKDIR /root/catkin_ws/
 RUN bash -c "source /opt/ros/kinetic/setup.bash && \
              mkdir src && \
-             catkin_make"
+             catkin_make" && \
+    echo "source /root/catkin_ws/devel/setup.bash" >> /root/.bashrc
 
-RUN echo "source /root/catkin_ws/devel/setup.bash" >> /root/.bashrc
+# Build plugins
+WORKDIR /root/plugins/
+COPY scripts/gazebo/animatev7 .
+RUN mkdir build && cd build && cmake .. && make && \
+    echo "source /root/plugins/setup.bash" >> /root/.bashrc
 
 WORKDIR /root/scripts
 
