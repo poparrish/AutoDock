@@ -38,11 +38,13 @@ Once the container is running, connect by running `./connect.sh`
 
 After connecting, run `./sim.sh` to start Gazebo and `./ros.sh` to start mavros
 
+Gimbal can be positioned through the px4 commander see https://dev.px4.io/en/advanced/gimbal_control.html
+This will be necessary until the simulated gimbal tracking is functional
+
 # Error troubleshooting
 Errors about being unable to launch control_node.py or pose_estimation_node.py when running `./sim.sh`:
 cd to the catkin_ws/src/drone/src/pose_estimation and `chmod +x control_node.py` and `chmod +x pose_estimation_node.py` 
 These commands give roslaunch the permission to launch these nodes from the simulator.launch file when we run `./ros.sh`
-
 
 Errors like  [Err] [Plugin.hh:165] Failed to load plugin
 when running ./sim.sh if you do not specify the environment variable directory which sets the plugin path then ros cant find it.
