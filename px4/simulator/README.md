@@ -48,10 +48,16 @@ These commands give roslaunch the permission to launch these nodes from the simu
 
 Errors like  [Err] [Plugin.hh:165] Failed to load plugin
 when running ./sim.sh if you do not specify the environment variable directory which sets the plugin path then ros cant find it.
-
-To set the plugin directory cd to /scripts/gazebo/animatev7/build
-
-Once in plugin directory run `export GAZEBO_PLUGIN_PATH=`pwd`:$GAZEBO_PLUGIN_PATH`
+If this is your first time running the animation plugin then you will need to open a new terminal outside of gazebo and createa a build directory for C. 
+First cd to your AutoDock-sim/px4/simulator/scripts/gazebo/animatev7
+Run the following commands:
+`mkdir build`
+`cd build`
+`cmake ../`
+`make`
+That creates a build directory and compiles the C plugins. Now to set the plugin directory to the build directory in the docker container go back to docker and cd to the build directory you just created and run
+`export GAZEBO_PLUGIN_PATH=`pwd`:$GAZEBO_PLUGIN_PATH`
+You will need to run this every time you run a new instance of `docker-compose up -d`
 
 Error running `docker-compose up -d` such as 
 ERROR: Version in "./docker-compose.yml" is unsupported. You might be seeing this error because you're using the wrong Compose file version. Either specify a version of "2" (or "2.0")
