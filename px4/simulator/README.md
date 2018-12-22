@@ -53,3 +53,6 @@ To set the plugin directory cd to /scripts/gazebo/animatev7/build
 
 Once in plugin directory run `export GAZEBO_PLUGIN_PATH=`pwd`:$GAZEBO_PLUGIN_PATH`
 
+Error running `docker-compose up -d` such as 
+ERROR: Version in "./docker-compose.yml" is unsupported. You might be seeing this error because you're using the wrong Compose file version. Either specify a version of "2" (or "2.0")
+To solve this replace the first line in docker-compose.yml `version: "3.0"` with `version: "2.0"`
