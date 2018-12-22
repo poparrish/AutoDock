@@ -161,6 +161,12 @@ def estimate_pose(frame, calibration):
         rodrigues = cv2.Rodrigues(rotation_vector)[0]#get euler angles from rotation matrix
         drone_pos = np.dot(-rodrigues.T, translation_vector)
         euler = yawpitchrolldecomposition(rodrigues)
+        #convert to NED reference frame
+        N = rotation_vector[1]
+        D = rotation_vector[2]
+        E = (rotation_vector[0] - 1.5708) * -1
+        NED = [N, E, D]
+
         #print "drone_pos", drone_pos
         debug = {
             'mask': mask,
@@ -169,7 +175,8 @@ def estimate_pose(frame, calibration):
             'distortion_coeffs': distortion_coeffs,
             'camera_matrix': camera_matrix
         }
-        return drone_pos, euler, target
+
+        return NED, euler, target
 
 
 def update_calibration(calibration):
