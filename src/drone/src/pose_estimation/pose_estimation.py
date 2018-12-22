@@ -6,15 +6,12 @@ from buildTarget import *
 """
 author: parker, nathan, wankun
 this is a proof-of-concept script that identifies a potential "landing platform" and  uses perspective transforms to calculate
-the pose (position/orientation). This is the rotation matrix and the Translation matrix. Currently I am just printing this data
-to a terminal and displaying a few edited images using cv2.show(). returns nothing
+the pose (position/orientation). These are the euler angles and the Translation matrix. 
 """
-
 
 def callback(x):
     # the cv2.createTrackbar() requires callback param
     pass
-
 
 def filter_rectangles(sort_rect, num_rect):
     # return 4 largest rectangles
@@ -108,7 +105,7 @@ def estimate_pose(frame, calibration):
     beacons = filter_rectangles(sort_rect, num_rect)
     bounded_rect_cords = get_bounded_rect_coords(beacons)
     sliced = []
-    for _ in bounded_rect_cords:
+    for _ in bounded_rect_cords:#we just want x & y get rid of all the other data like area, length,width etc
         sliced.append(_[:2])
 
     if len(sliced) != 7:
@@ -135,7 +132,6 @@ def estimate_pose(frame, calibration):
             dtype="double"
         )
         print 'made it past target points'
-        # ur balz
         # 3D points (arbitrary reference frame. Measured dimensions in cm with upper middle as origin
         model_points = np.array(
             [
@@ -173,7 +169,7 @@ def estimate_pose(frame, calibration):
             'distortion_coeffs': distortion_coeffs,
             'camera_matrix': camera_matrix
         }
-        return drone_pos, euler
+        return drone_pos, euler, target
 
 
 def update_calibration(calibration):
