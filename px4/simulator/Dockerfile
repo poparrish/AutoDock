@@ -29,7 +29,7 @@ RUN apt-get install -y libudev-dev libsdl2-dev gstreamer1.0-* libgstreamer1.0-*
 # Download drivers from https://www.nvidia.com/object/Unix.html
 # Make sure to match your current driver version (view by running nvidia-smi)
 # Put the *.run file in this directory and rename it to NVIDIA-DRIVER.run
-RUN apt-get install kmod
+RUN apt-get install kmod -y
 COPY NVIDIA-DRIVER.run .
 RUN ./NVIDIA-DRIVER.run -a -N --ui=none --no-kernel-module && rm ./NVIDIA-DRIVER.run
 
