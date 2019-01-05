@@ -15,11 +15,6 @@ to a terminal and displaying a few edited images using cv2.show(). returns nothi
 """
 
 
-def callback(x):
-    #the cv2.createTrackbar() requires callback param
-    pass
-
-
 #TODO
 def calibrate_gimbal():
     """
@@ -48,75 +43,36 @@ def update_gimbal_pid(servoPitch_pos, servoYaw_pos, bounded_rect_coords):
     pass
 
 
-def filter_rectangles(sort_rect):
-    #return 4 largest rectangles
+import argparse
+
+import cv2
+import numpy as np
+from buildTarget import *
+"""
+author: parker, nathan, wankun
+this is a proof-of-concept script that identifies a potential "landing platform" and  uses perspective transforms to calculate
+the pose (position/orientation). These are the euler angles and the Translation matrix. 
+"""
+
+def callback(x):
+    # the cv2.createTrackbar() requires callback param
+    pass
+
+def pixy_coords_callback(data):
+    global pixy_coords
+    pixycoords = data
+
+def filter_rectangles(sort_rect, num_rect):
+    # return 4 largest rectangles
     sorted_area = sorted(sort_rect, key=itemgetter(4))
     sorted_area.reverse()
-    if len(sorted_area) > 4:
+    if len(sorted_area) > num_rect:
         for i in sorted_area:
             sorted_area = sorted_area[:-1]
-            if len(sorted_area) == 4:
+            if len(sorted_area) == num_rect:
                 break
     return_rectangles = sorted_area
     return return_rectangles
-
-
-def convert_to_cartesian(beacons):
-    i = 0
-    # print 'default to cartesian in'
-    # print beacons
-    for beacon in beacons:
-        #convert x
-        if beacon[0] > WIDTH / 2:
-            beacon[0] = beacon[0] - WIDTH / 2
-        elif beacon[0] < WIDTH / 2:
-            beacon[0] = WIDTH / 2 - beacon[0]
-            beacon[0] *= -1
-        else:
-            beacon[0] = 0
-        # print 'beacon val'
-        # print beacon[0]
-        beacons[i][0] = beacon[0]
-        # print 'array val'
-        # print beacons[i][0]
-        #convert y
-        if beacon[1] > HEIGHT / 2:
-            beacon[1] = beacon[1] - HEIGHT / 2
-            beacon[1] *= -1
-        elif beacon[1] < HEIGHT / 2:
-            beacon[1] = HEIGHT / 2 - beacon[1]
-        else:
-            beacon[1] = 0
-        beacons[i][1] = beacon[1]
-        i += 1
-    # print 'default to cartesian out'
-    # print beacons
-    return beacons
-
-
-def cartesian_to_default(sorted_beacons):
-    for beacon in sorted_beacons:
-        #convert x
-        if beacon[0] > 0:
-            beacon[0] += WIDTH / 2
-        elif beacon[0] < 0:
-            beacon[0] *= -1
-            beacon[0] = WIDTH / 2 - beacon[0]
-        else:
-            beacon[0] = WIDTH / 2
-        #convert y
-        if beacon[1] > 0:
-            beacon[1] = HEIGHT / 2 - beacon[1]
-        elif beacon[1] < 0:
-            beacon[1] *= -1
-            beacon[1] = HEIGHT / 2 + beacon[1]
-        else:
-            beacon[1] = HEIGHT
-    # print 'cartesian_to_default out'
-    # print sorted_beacons
-    printable_coords = sorted_beacons
-    return printable_coords
-
 
 def get_bounded_rect_coords(cartesian_beacons):
     for coords in cartesian_beacons:
@@ -127,37 +83,10 @@ def get_bounded_rect_coords(cartesian_beacons):
     bounded_rect_cords = cartesian_beacons
     return bounded_rect_cords
 
-
-def sort_beacons(cartesian_coords):
-    sorted_by_y = sorted(cartesian_coords, key=itemgetter(1))
-    sorted_by_y.reverse()  #smallest to largest
-    try:
-        #now we are now smallest to largest y, swap slots 0-1 and 2-3 if necessary to get x in order
-        if (sorted_by_y[0][0] < sorted_by_y[1][0]):  #if first x is smaller than second x
-            sorted_by_y[0], sorted_by_y[1] = sorted_by_y[1], sorted_by_y[0]
-        if (sorted_by_y[2][0] > sorted_by_y[3][0]):  #if first x is smaller than second x
-            sorted_by_y[2], sorted_by_y[3] = sorted_by_y[3], sorted_by_y[2]
-    except IndexError:
-        sorted_by_y = [0, 0, 0, 0, 0]
-    return sorted_by_y
-
-
-def distance_between(coord1, coord2):
-    try:
-        difference = math.sqrt(
-            (math.fabs((coord1[0] - coord2[0]) * (coord1[0] - coord2[0]))) +
-            math.fabs((coord1[1] - coord2[1]) * (coord1[1] - coord2[1]))
-        )
-    except TypeError or ValueError:
-        difference = 0
-    return difference
-
-
 def slice_coords(beacon):
     return beacon[0:2]
 
-
-#ratio references measured in cm
+# ratio references measured in cm
 CAM_HEIGHT = 74
 CAM_DIST = 160
 CAM_ANGLE = 90 - (math.atan(CAM_DIST / CAM_HEIGHT) * 100)
@@ -165,231 +94,337 @@ PIX_RS = 403
 PIX_LS = 400
 PIX_TS = 200
 PIX_BS = 342
-APPROACH_DIST_CM = 200
-#RS = 43.8
-#LS = 42.5
+# RS = 43.8
+# LS = 42.5
 
-ilowH = 0
-ihighH = 185
-ilowS = 0
-ihighS = 125
-ilowV = 216
-ihighV = 255
+print 'camangle'
+print CAM_ANGLE
 
 WIDTH = 640
 HEIGHT = 480
+APPROACH_DIST_CM = 250
 
-
-def create_window():
+def start_capture(src, resize):
+    cap = cv2.VideoCapture(src)
     cv2.namedWindow('image')
 
-    cv2.createTrackbar('lowH', 'image', ilowH, 255, callback)
-    cv2.createTrackbar('highH', 'image', ihighH, 255, callback)
-    cv2.createTrackbar('lowS', 'image', ilowS, 255, callback)
-    cv2.createTrackbar('highS', 'image', ihighS, 255, callback)
-    cv2.createTrackbar('lowV', 'image', ilowV, 255, callback)
-    cv2.createTrackbar('highV', 'image', ihighV, 255, callback)
+    if resize:
+        cap.set(3, WIDTH)  # width
+        cap.set(4, HEIGHT)  # height
 
-
-def start_capture():
-    cap = cv2.VideoCapture(0)
-    cap.set(3, WIDTH)  # width
-    cap.set(4, HEIGHT)  # height
-    # cap.set(CV_CAP_PROP_EXPOSURE, 0.0)
     return cap
 
+def yawpitchrolldecomposition(R):
+    sin_x = math.sqrt(R[2,0] * R[2,0] +  R[2,1] * R[2,1])
+    validity = sin_x < 1e-6
+    if not validity:
+        z1 = math.atan2(R[2,0], R[2,1])     # around z1-axis
+        x = math.atan2(sin_x,  R[2,2])     # around x-axis
+        z2 = math.atan2(R[0,2], -R[1,2])    # around z2-axis
+    else: # gimbal lock
+        z1 = 0                                         # around z1-axis
+        x = math.atan2(sin_x,  R[2,2])     # around x-axis
+        z2 = 0                                         # around z2-axis
 
-def process_frame(frame, (low_h, high_h), (low_s, high_s), (low_v, high_v)):
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    lower_hsv = np.array([low_h, low_s, low_v])
-    higher_hsv = np.array([high_h, high_s, high_v])
+    return np.array([[z1], [x], [z2]])
+
+def estimate_pose_pixy(xy_coords):
+    # original = frame
+    #
+    # # filter out the hsv values for the "beacons" we want and create bounding rectangles
+    # lower_hsv = np.array([calibration[k][0] for k in 'hsv'])
+    # higher_hsv = np.array([calibration[k][1] for k in 'hsv'])
+    # mask = cv2.inRange(frame, lower_hsv, higher_hsv)
+    # _, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    # num_contour = 0
+    # sort_rect = []
+    # for c in contours:
+    #     if cv2.contourArea(c) < 1:
+    #         continue
+    #     rect = cv2.boundingRect(c)
+    #     x, y, w, h = rect
+    #     cv2.rectangle(original, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    #     num_contour += 1
+    #     data = [x, y, w, h, w * h]
+    #     sort_rect.append(data)
+    #
+    # # filters all detected rectangles for only the num_rect largest
+    # num_rect = 7
+    # beacons = filter_rectangles(sort_rect, num_rect)
+    # bounded_rect_cords = get_bounded_rect_coords(beacons)
+    # xy_coords = []
+    # for _ in bounded_rect_cords:  # we just want x & y get rid of all the other data like area, length,width etc
+    #     xy_coords.append(_[:2])
+
+    # PIXY CAM data plugs into xy_coords
+    if len(xy_coords) != 7:
+        return None
+    else:
+        target = getTarget(xy_coords)
+        print 'TARGET: ', target
+        # to perform the cv2.PnP transform OpenCV needs the default coordinate settings so we revert the sorted beacons back to default coordinate system
+
+        # Camera settings these basically assume a perfect projection plane and will need to be calibrated. just fillers for now 11/5/18
+        focal_length = 510
+        camera_matrix = np.array(
+            [(focal_length, 0, WIDTH / 2), (0, focal_length, HEIGHT / 2), (0, 0, 1)], dtype="double"
+        )
+
+        # 2D points (use target)
+        target_points = np.array(
+            [
+                (target[0][0], target[0][1]), (target[1][0], target[1][1]),
+                (target[2][0], target[2][1]), (target[3][0], target[3][1]),
+                (target[4][0], target[4][1]), (target[5][0], target[5][1]),
+                (target[6][0], target[6][1])
+            ],
+            dtype="double"
+        )
+        print 'made it past target points'
+        # 3D points (arbitrary reference frame. Measured dimensions in cm with upper middle as origin
+        model_points = np.array(
+            [
+                (-45.7, 0, 86.3), (-48.2, 0, 41.3), (-45.7, 0, 2.5), (0, 0, 0), (45.7, 0, 2.5), (48.2, 0, 41.3),
+                (45.7, 0, 86.3)
+            ],
+            dtype="double"
+        )
+
+        distortion_coeffs = np.zeros((5, 1), dtype="double")  # assume zero distortion...this is practically the case
+        # distortion_coeffs =  np.array([#got these from running calibration.py
+        #     (.13006041, .16734663,.00304074,-.01473097,-1.71723664)
+        # ], dtype="double")
+
+        # MAGIC HAPPENS HERE. fortunately cv3 has a perspective transform. which allows us to extract the rotation_vector and translation_vector
+        # note that the translation vector is from the center of the cameras frame to the camera at the same depth as the 0,0,0 beacon.
+        print 'made it to pose'
+        success, rotation_vector, translation_vector = cv2.solvePnP(
+            objectPoints=model_points,
+            imagePoints=target_points,
+            cameraMatrix=camera_matrix,
+            distCoeffs=distortion_coeffs
+        )
+        print 'made it through pose'
+
+        # now take dot product to get drone position relative to the platform
+        rodrigues = cv2.Rodrigues(rotation_vector)[0]  # get euler angles from rotation matrix
+        # drone_pos = np.dot(-rodrigues.T, translation_vector)
+        euler = yawpitchrolldecomposition(rodrigues)
+        # convert to NED reference frame
+        N = rotation_vector[1]
+        D = rotation_vector[2]
+        E = (rotation_vector[0] - 1.5708) * -1
+        NED = [N, E, D]
+
+        # print "drone_pos", drone_pos
+        # debug = {
+        #     'mask': mask,
+        #     'target': target,
+        #     'target_points': target_points,
+        #     'distortion_coeffs': distortion_coeffs,
+        #     'camera_matrix': camera_matrix
+        # }
+
+        return NED, euler, target
+
+def estimate_pose(frame, calibration):
+    original = frame
+
+    # filter out the hsv values for the "beacons" we want and create bounding rectangles
+    lower_hsv = np.array([calibration[k][0] for k in 'hsv'])
+    higher_hsv = np.array([calibration[k][1] for k in 'hsv'])
     mask = cv2.inRange(frame, lower_hsv, higher_hsv)
-    _, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    _, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    num_contour = 0
+    sort_rect = []
+    for c in contours:
+        if cv2.contourArea(c) < 1:
+            continue
+        rect = cv2.boundingRect(c)
+        x, y, w, h = rect
+        cv2.rectangle(original, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        num_contour += 1
+        data = [x, y, w, h, w * h]
+        sort_rect.append(data)
 
-    return contours, mask
+    # filters all detected rectangles for only the num_rect largest
+    num_rect = 7
+    beacons = filter_rectangles(sort_rect, num_rect)
+    bounded_rect_cords = get_bounded_rect_coords(beacons)
+    xy_coords = []
+    for _ in bounded_rect_cords:  # we just want x & y get rid of all the other data like area, length,width etc
+        xy_coords.append(_[:2])
+
+    # PIXY CAM data plugs into xy_coords
+    if len(xy_coords) != 7:
+        return None
+    else:
+        target = getTarget(bounded_rect_cords)
+        print 'TARGET: ', target
+        # to perform the cv2.PnP transform OpenCV needs the default coordinate settings so we revert the sorted beacons back to default coordinate system
+
+        # Camera settings these basically assume a perfect projection plane and will need to be calibrated. just fillers for now 11/5/18
+        focal_length = 510
+        camera_matrix = np.array(
+            [(focal_length, 0, WIDTH / 2), (0, focal_length, HEIGHT / 2), (0, 0, 1)], dtype="double"
+        )
+
+        # 2D points (use target)
+        target_points = np.array(
+            [
+                (target[0][0], target[0][1]), (target[1][0], target[1][1]),
+                (target[2][0], target[2][1]), (target[3][0], target[3][1]),
+                (target[4][0], target[4][1]), (target[5][0], target[5][1]),
+                (target[6][0], target[6][1])
+            ],
+            dtype="double"
+        )
+        print 'made it past target points'
+        # 3D points (arbitrary reference frame. Measured dimensions in cm with upper middle as origin
+        model_points = np.array(
+            [
+                (-45.7, 0, 86.3), (-48.2, 0, 41.3), (-45.7, 0, 2.5), (0, 0, 0), (45.7, 0, 2.5), (48.2, 0, 41.3),
+                (45.7, 0, 86.3)
+            ],
+            dtype="double"
+        )
+
+        distortion_coeffs = np.zeros((5, 1), dtype="double")  # assume zero distortion...this is practically the case
+        # distortion_coeffs =  np.array([#got these from running calibration.py
+        #     (.13006041, .16734663,.00304074,-.01473097,-1.71723664)
+        # ], dtype="double")
+
+        # MAGIC HAPPENS HERE. fortunately cv3 has a perspective transform. which allows us to extract the rotation_vector and translation_vector
+        # note that the translation vector is from the center of the cameras frame to the camera at the same depth as the 0,0,0 beacon.
+        print 'made it to pose'
+        success, rotation_vector, translation_vector = cv2.solvePnP(
+            objectPoints=model_points,
+            imagePoints=target_points,
+            cameraMatrix=camera_matrix,
+            distCoeffs=distortion_coeffs
+        )
+        print 'made it through pose'
+
+        # now take dot product to get drone position relative to the platform
+        rodrigues = cv2.Rodrigues(rotation_vector)[0]  # get euler angles from rotation matrix
+        # drone_pos = np.dot(-rodrigues.T, translation_vector)
+        euler = yawpitchrolldecomposition(rodrigues)
+        # convert to NED reference frame
+        N = rotation_vector[1]
+        D = rotation_vector[2]
+        E = (rotation_vector[0] - 1.5708) * -1
+        NED = [N, E, D]
+
+        # print "drone_pos", drone_pos
+        debug = {
+            'mask': mask,
+            'target': target,
+            'target_points': target_points,
+            'distortion_coeffs': distortion_coeffs,
+            'camera_matrix': camera_matrix
+        }
+
+        return NED, euler, target
 
 
-def main():
-    cap = start_capture()
-    create_window()
+def update_calibration(calibration):
+    # create trackbars for color change
+    low_h = cv2.getTrackbarPos('lowH', 'image')
+    high_h = cv2.getTrackbarPos('highH', 'image')
+    low_s = cv2.getTrackbarPos('lowS', 'image')
+    high_s = cv2.getTrackbarPos('highS', 'image')
+    low_v = cv2.getTrackbarPos('lowV', 'image')
+    high_v = cv2.getTrackbarPos('highV', 'image')
+    return {
+        'h': (low_h, high_h),
+        's': (low_s, high_s),
+        'v': (low_v, high_v),
+    }
 
-    while True:
-        with Timer() as t:
-            # grab the frame
-            ret, frame = cap.read()
-            frame = cv2.UMat(frame)  # enable OpenCL processing
-            original = frame
 
-            # get trackbar positions
-            h = cv2.getTrackbarPos('lowH', 'image'), cv2.getTrackbarPos('highH', 'image')
-            s = cv2.getTrackbarPos('lowS', 'image'), cv2.getTrackbarPos('highS', 'image')
-            v = cv2.getTrackbarPos('lowV', 'image'), cv2.getTrackbarPos('highV', 'image')
+def draw_debug(frame, pose):
+    if pose is not None:
+        (translation_vector, rotation_vector, debug) = pose
+        target = debug['target']
+        target_points = debug['target_points']
+        distortion_coeffs = debug['distortion_coeffs']
+        camera_matrix = debug['camera_matrix']
+        mask = debug['mask']
 
-            # filter out the hsv values for the "beacons" we want and
-            blank_slate = cv2.inRange(frame, 0, 0)
-            contours, mask = process_frame(frame, h, s, v)
-            num_contour = 0
-            sort_rect = []
-            for c in contours:
-                if cv2.contourArea(c) < 40:
-                    continue
-                rect = cv2.boundingRect(c)
-                x, y, w, h = rect
-                cv2.rectangle(original, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                num_contour += 1
-                data = [x, y, w, h, w * h]
-                sort_rect.append(data)
-
-            # filters all detected rectangles for only the 4 largest
-            beacons = filter_rectangles(sort_rect)
-            # get bounded rect coords before we convert to cartesian (makes math easier).
-            bounded_rect_cords = get_bounded_rect_coords(beacons)
-            # now convert to cartesian where (0,0) is at the center of the cameras field of view. OpenCV defaults to 0,0 in upper left corner
-            cartesian_coords = convert_to_cartesian(bounded_rect_cords)
-            # now that we have exact coordinates we can identify which is which by ordering them (upper right, upper left, lower left, lower right)
-            sorted_beacons = sort_beacons(cartesian_coords)
-            # print sorted_beacons
-
-            # if by this point we have not identified all the beacons (in this case its 4) then we can't proceed with the transform
-            if len(sorted_beacons) != 4:
-                print 'no image lock'
-            else:
-                # to perform the cv2.PnP transform OpenCV needs the default coordinate settings so we revert the sorted beacons back to default coordinate system
-                target = cartesian_to_default(sorted_beacons)
-
-                # Camera settings these basically assume a perfect projection plane and will need to be calibrated. just fillers for now
-                focal_length = 510
-                camera_matrix = np.array(
-                    [(focal_length, 0, WIDTH / 2), (0, focal_length, HEIGHT / 2), (0, 0, 1)], dtype="double"
-                )
-
-                # print camera_matrix
-
-                # 2D points (use target)
-                target_points = np.array(
-                    [
-                        (target[0][0], target[0][1]), (target[1][0], target[1][1]), (target[2][0], target[2][1]),
-                        (target[3][0], target[3][1])
-                    ],
-                    dtype="double"
-                )
-
-                # small balls
-                # # 3D points (arbitrary reference frame. Measured dimensions in cm with upperright as origin
-                model_points = np.array(
-                    [
-                        (0, 0, 0),  # upper right
-                        (-24.5, 0, 0),  # upper left
-                        (-24.5, -12.0, 43.8),  # lower left
-                        (0, -12.0, 43.8)  # lower right
-                    ],
-                    dtype="double"
-                )
-
-                # big balls
-                # # 3D points (arbitrary reference frame. Measured dimensions in cm with upperright as origin
-                # model_points = np.array([
-                #     (0, 0, 0),  # upper right
-                #     (-59.7, 0, 0),  # upper left
-                #     (-59.7, -39.4, 86.3),  # lower left
-                #     (0, -39.4, 87) # lower right
-                # ], dtype="double")
-
-                distortion_coeffs = np.zeros(
-                    (5, 1), dtype="double"
-                )  # assume zero distortion...this is practically the case
-                # distortion_coeffs =  np.array([#got these from running calibration.py
-                #     (.13006041, .16734663,.00304074,-.01473097,-1.71723664)
-                # ], dtype="double")
-
-                # MAGIC HAPPENS HERE. fortunately cv3 has a perspective transform. which allows us to extract the rotation_vector and translation_vector
-                # note that the translation vector is from the center of the cameras frame to the camera at the same depth as the 0,0,0 beacon.
-
-                (success, rotation_vector,
-                 translation_vector) = cv2.solvePnP(model_points, target_points, camera_matrix, distortion_coeffs)
-
-                # adds the bgr axes to the original image because fancy
-                (zAxis, jacobian) = cv2.projectPoints(
-                    np.array([(0.0, 0.0, 30.0)]), rotation_vector, translation_vector, camera_matrix, distortion_coeffs
-                )
-                (yAxis, jacobian) = cv2.projectPoints(
-                    np.array([(0.0, 30.0, 0.0)]), rotation_vector, translation_vector, camera_matrix, distortion_coeffs
-                )
-                (xAxis, jacobian) = cv2.projectPoints(
-                    np.array([(30.0, 0.0, 0.0)]), rotation_vector, translation_vector, camera_matrix, distortion_coeffs
-                )
-                p1z = (int(target_points[0][0]), int(target_points[0][1]))
-                p2z = (int(zAxis[0][0][0]), int(zAxis[0][0][1]))
-                cv2.line(original, p1z, p2z, (255, 0, 0), 2)  # (blue)
-                p1y = (int(target_points[0][0]), int(target_points[0][1]))
-                p2y = (int(yAxis[0][0][0]), int(yAxis[0][0][1]))
-                cv2.line(original, p1y, p2y, (0, 255, 0), 2)  # (green)
-                p1x = (int(target_points[0][0]), int(target_points[0][1]))
-                p2x = (int(xAxis[0][0][0]), int(xAxis[0][0][1]))
-                cv2.line(original, p1x, p2x, (0, 0, 255), 2)  # (red)
-
-                # this just traces a rectangle around the target so we know if sort_beacons worked right.
-                center = [0, 0]
-                cv2.line(blank_slate, (target[0][0], target[0][1]), (target[1][0], target[1][1]), (255, 255, 255), 2)
-                cv2.line(blank_slate, (target[1][0], target[1][1]), (target[2][0], target[2][1]), (255, 255, 255), 2)
-                cv2.line(blank_slate, (target[2][0], target[2][1]), (target[3][0], target[3][1]), (255, 255, 255), 2)
-                cv2.line(blank_slate, (target[3][0], target[3][1]), (target[0][0], target[0][1]), (255, 255, 255), 2)
-
-                # adjust rotation_matrix
-                camera_angle = .486
-                rotation_vector[0] -= np.pi * -1  # flip x to correct orientation
-                # rotation_vector[2] *= -1 #flip our z axis so that positive is facing the camera
-
-                x_theta = -camera_angle  # add gimbals reported camera angle to x
-                z_theta = 0  # rotation_vector[1]
-                y_theta = 0  # rotation_vector[2]
-
-                a = translation_vector[0]
-                b = translation_vector[1]
-                c = translation_vector[2]
-
-                # print "no rotation" , (a, b, c)
-                a1 = a * math.cos(z_theta) - b * math.sin(z_theta)
-                b1 = a * math.sin(z_theta) + b * math.cos(z_theta)
-                c1 = c
-                # print "x axis rotation", (a1, b1, c1)
-
-                c2 = c1 * math.cos(y_theta) - a1 * math.sin(y_theta)
-                a2 = c1 * math.sin(y_theta) + a1 * math.cos(y_theta)
-                b2 = b1
-                # print "y axis rotation", (a2, b2, c2)
-
-                b3 = b2 * math.cos(x_theta) - c2 * math.sin(x_theta)
-                c3 = b2 * math.sin(x_theta) + c2 * math.cos(x_theta)
-                a3 = a2
-
-                a3 = (math.atan(rotation_vector[2]) * c3) - translation_vector[0]
-
-                # print "z axis rotation", (a3, b3, c3)
-
-                translation = calculate_translation(rotation_vector[2], translation_vector[2], APPROACH_DIST_CM)
-                print "translation = ", translation
-                # print "(a3, b3, c3) = ", (a3, b3, c3)
-                print "rotation_vector", format(np.rad2deg(rotation_vector))  # radians (x,y,z)
-                print "translation_vector", format(
-                    translation_vector
-                )  # calibrated to be cm. this was done in the camera calibration matrix
-
-        print "Main loop took %sms" % t.interval
+        # adds the bgr axes to the original image because fancy
+        (zAxis, jacobian) = cv2.projectPoints(
+            np.array([(0.0, 0.0, 30.0)]), rotation_vector, translation_vector, camera_matrix, distortion_coeffs
+        )
+        (yAxis, jacobian) = cv2.projectPoints(
+            np.array([(0.0, 30.0, 0.0)]), rotation_vector, translation_vector, camera_matrix, distortion_coeffs
+        )
+        (xAxis, jacobian) = cv2.projectPoints(
+            np.array([(30.0, 0.0, 0.0)]), rotation_vector, translation_vector, camera_matrix, distortion_coeffs
+        )
+        p1z = (int(target_points[0][0]), int(target_points[0][1]))
+        p2z = (int(zAxis[0][0][0]), int(zAxis[0][0][1]))
+        cv2.line(frame, p1z, p2z, (255, 0, 0), 2)  # (blue)
+        p1y = (int(target_points[0][0]), int(target_points[0][1]))
+        p2y = (int(yAxis[0][0][0]), int(yAxis[0][0][1]))
+        cv2.line(frame, p1y, p2y, (0, 255, 0), 2)  # (green)
+        p1x = (int(target_points[0][0]), int(target_points[0][1]))
+        p2x = (int(xAxis[0][0][0]), int(xAxis[0][0][1]))
+        cv2.line(frame, p1x, p2x, (0, 0, 255), 2)  # (red)
+        print target
         # Just adds extra displays to make real-time tuning and debugging easier
         lineThickness = 1
-        cv2.line(original, (0, HEIGHT / 2), (WIDTH, HEIGHT / 2), (100, 100, 0), lineThickness)
-        cv2.line(original, (WIDTH / 2, 0), (WIDTH / 2, HEIGHT), (100, 100, 0), lineThickness)
+        cv2.line(frame, (0, HEIGHT / 2), (WIDTH, HEIGHT / 2), (100, 100, 0), lineThickness)
+        cv2.line(frame, (WIDTH / 2, 0), (WIDTH / 2, HEIGHT), (100, 100, 0), lineThickness)
         frame = cv2.bitwise_and(frame, frame, mask=mask)
-        # cv2.imshow('blank_slate', blank_slate)
         cv2.imshow('mask', mask)
-        cv2.imshow('image', original)
-        k = cv2.waitKey(1) & 0xFF  # set frame refresh here
-        if k == 113 or k == 27:
-            break
 
-    cv2.destroyAllWindows()
+    cv2.imshow('frame', frame)
+    k = cv2.waitKey(1) & 0xFF  # set frame refresh here
+    if k == 113 or k == 27:
+        cv2.destroyAllWindows()
+        exit(0)
 
 
+def main(src, resize, calibration):
+    print 'Starting capture on device "%s"...' % src
+    cap = start_capture(src, resize)
+
+    cv2.createTrackbar('lowH', 'image', calibration['h'][0], 255, callback)
+    cv2.createTrackbar('highH', 'image', calibration['h'][1], 255, callback)
+    cv2.createTrackbar('lowS', 'image', calibration['s'][0], 255, callback)
+    cv2.createTrackbar('highS', 'image', calibration['s'][1], 255, callback)
+    cv2.createTrackbar('lowV', 'image', calibration['v'][0], 255, callback)
+    cv2.createTrackbar('highV', 'image', calibration['v'][1], 255, callback)
+
+    ret, frame = cap.read()
+
+    if not ret:
+        print 'no video'
+
+    try:
+        calibration = update_calibration(calibration)
+        pose = estimate_pose(frame, calibration)
+        return pose
+        #draw_debug(frame, pose)
+        if pose is None:
+            return None
+            print 'no image lock'
+    except Exception as e:
+        print 'failed to reconstruct target %s' % e
+
+# Default camera calibration
+default_calibration = {
+    'h': (0, 185),
+    's': (0, 125),
+    'v': (216, 255),
+}
+
+# Used for testing purposes (running w/o ROS)
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-s", "--src", help="video source device", type=str, default='0')
+    parser.add_argument("-r", "--resize", help="resize video source", type=bool, default=False)
+
+    args = parser.parse_args()
+
+    main(args.src, args.resize, default_calibration)
